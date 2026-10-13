@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nav Design v4 — Mega Menu</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #07090f;
+  --s1:       #0b1120;
+  --s2:       #0e1628;
+  --s3:       #111e32;
+  --border:   rgba(255,255,255,0.06);
+  --blue:     #3b82f6;
+  --violet:   #8b5cf6;
+  --cyan:     #22d3ee;
+  --green:    #34d399;
+  --amber:    #fbbf24;
+  --rose:     #fb7185;
+  --t1:       #e8f0ff;
+  --t2:       #4e6e9a;
+  --t3:       #1c2e48;
+}
+
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── TOPBAR ──────────────────────────────────────── */
+.topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 0;
+  flex-shrink: 0;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 60;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 9px;
+  margin-right: 20px; flex-shrink: 0;
+}
+.logo-mark {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 900; color: #fff;
+  box-shadow: 0 0 18px rgba(59,130,246,0.35);
+}
+.logo-text { font-size: 14px; font-weight: 800; color: var(--t1); letter-spacing: -0.3px; }
+
+/* module tabs */
+.module-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  gap: 0;
+}
+
+.mod-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 14px;
+  font-size: 12.5px; font-weight: 500;
+  color: var(--t2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+  position: relative;
+  user-select: none;
+}
+.mod-tab i { font-size: 15px; transition: transform 0.2s; }
+.mod-tab .chevron { font-size: 11px; margin-left: -2px; transition: transform 0.2s; color: var(--t3); }
+.mod-tab:hover { color: var(--t1); background: rgba(255,255,255,0.03); }
+.mod-tab.open, .mod-tab.active {
+  color: var(--t1);
+  border-bottom-color: var(--blue);
+  background: rgba(59,130,246,0.06);
+}
+.mod-tab.open .chevron { transform: rotate(180deg); color: var(--blue); }
+
+.topbar-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+
+/* orientation toggle */
+.orient-toggle {
+  display: flex; align-items: center; gap: 1px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 3px;
+}
+.orient-btn {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--t2); cursor: pointer;
+  transition: all 0.15s;
+}
+.orient-btn:hover { color: var(--t1); background: rgba(255,255,255,0.05); }
+.orient-btn.sel { background: rgba(59,130,246,0.2); color: var(--blue); }
+
+.tb-btn {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--t2); font-size: 14px;
+  transition: all 0.15s;
+}
+.tb-btn:hover { color: var(--t1); background: rgba(255,255,255,0.08); }
+
+.pin-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 10px;
+  font-size: 11px; font-weight: 600;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--t2); cursor: pointer;
+  transition: all 0.15s;
+}
+.pin-btn:hover { color: var(--t1); }
+.pin-btn.pinned { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.25); color: var(--blue); }
+.pin-btn i { font-size: 13px; }
+
+.avatar {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #fff; cursor: pointer;
+  box-shadow: 0 0 12px rgba(59,130,246,0.3);
+}
+
+/* ─── MEGA MENU — TOP DROP ────────────────────────── */
+.mega-wrap {
+  position: relative;
+  z-index: 50;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Top variant */
+.mega-top {
+  background: var(--s2);
+  border-bottom: 1px solid rgba(59,130,246,0.15);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.32s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+  opacity: 0;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.mega-top.open { max-height: 320px; opacity: 1; }
+.mega-top.pinned-open { max-height: 320px; opacity: 1; }
+
+/* Side variant */
+.mega-side {
+  position: fixed;
+  top: 52px; left: 0;
+  width: 0;
+  height: calc(100vh - 52px);
+  background: var(--s2);
+  border-right: 1px solid rgba(59,130,246,0.15);
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+  opacity: 0;
+  z-index: 55;
+  box-shadow: 8px 0 40px rgba(0,0,0,0.5);
+  display: flex; flex-direction: column;
+}
+.mega-side.open { width: 360px; opacity: 1; }
+.mega-side.pinned-open { width: 300px; opacity: 1; }
+
+/* Bottom variant */
+.mega-bottom {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--s2);
+  border-top: 1px solid rgba(59,130,246,0.15);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.32s cubic-bezier(.4,0,.2,1), opacity 0.2s;
+  opacity: 0;
+  z-index: 55;
+  box-shadow: 0 -12px 40px rgba(0,0,0,0.5);
+}
+.mega-bottom.open { max-height: 300px; opacity: 1; }
+.mega-bottom.pinned-open { max-height: 300px; opacity: 1; }
+
+/* ─── MEGA INNER ──────────────────────────────────── */
+.mega-inner {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  overflow-y: auto;
+}
+.mega-inner::-webkit-scrollbar { width: 4px; }
+.mega-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+
+.mega-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.mega-module-name {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--blue);
+  font-family: 'Courier New', monospace;
+}
+.mega-module-name i { font-size: 15px; }
+
+.mega-close {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--t2); cursor: pointer;
+  transition: all 0.15s;
+}
+.mega-close:hover { background: rgba(251,113,133,0.1); color: var(--rose); border-color: rgba(251,113,133,0.2); }
+
+/* card grid */
+.mega-grid {
+  display: grid;
+  gap: 8px;
+}
+/* top/bottom: many columns */
+.mega-top .mega-grid,
+.mega-bottom .mega-grid {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+/* side: two columns */
+.mega-side .mega-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.mega-group { display: flex; flex-direction: column; gap: 4px; }
+.mega-group-label {
+  font-size: 9px; font-weight: 800;
+  color: var(--t3); text-transform: uppercase;
+  letter-spacing: 1.2px; font-family: 'Courier New', monospace;
+  padding: 0 0 2px 0;
+}
+
+.mega-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.mega-card:hover {
+  background: rgba(59,130,246,0.08);
+  border-color: rgba(59,130,246,0.18);
+}
+.mega-card.active {
+  background: rgba(59,130,246,0.12);
+  border-color: rgba(59,130,246,0.25);
+}
+
+.mc-icon {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  background: rgba(255,255,255,0.04);
+  color: var(--t2);
+  transition: background 0.15s, color 0.15s;
+}
+.mega-card:hover .mc-icon { background: rgba(59,130,246,0.15); color: var(--blue); }
+.mega-card.active .mc-icon { background: rgba(59,130,246,0.2); color: var(--blue); }
+
+.mc-text { min-width: 0; }
+.mc-label {
+  font-size: 12px; font-weight: 600; color: var(--t1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.mc-sub {
+  font-size: 10px; color: var(--t2); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mega-card.active .mc-label { color: #93c5fd; }
+
+/* ─── BACKDROP ────────────────────────────────────── */
+.backdrop {
+  position: fixed; inset: 0; z-index: 40;
+  display: none; background: rgba(0,0,0,0.3);
+}
+.backdrop.on { display: block; }
+
+/* ─── CONTENT AREA ────────────────────────────────── */
+.workspace {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s cubic-bezier(.4,0,.2,1);
+}
+.workspace.side-pinned { margin-left: 300px; }
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 4px; }
+
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.page-title { font-size: 22px; font-weight: 800; color: var(--t1); letter-spacing: -0.5px; }
+.page-crumb { font-size: 11px; color: var(--t3); margin-top: 3px; font-family: 'Courier New', monospace; }
+
+.create-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 16px;
+  background: linear-gradient(135deg, var(--blue), #6d28d9);
+  border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(109,40,217,0.3);
+  transition: all 0.2s;
+}
+.create-btn:hover { box-shadow: 0 6px 28px rgba(109,40,217,0.5); transform: translateY(-1px); }
+
+.cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px;
+  position: relative; overflow: hidden;
+  transition: transform 0.18s, border-color 0.2s;
+}
+.card:hover { transform: translateY(-2px); }
+.card-shine {
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--shine-c, rgba(59,130,246,0.5)), transparent);
+}
+.c-blue  { --shine-c: rgba(59,130,246,0.6); }
+.c-green { --shine-c: rgba(52,211,153,0.6); }
+.c-amber { --shine-c: rgba(251,191,36,0.6); }
+.c-rose  { --shine-c: rgba(251,113,133,0.6); }
+
+.card-bg { position: absolute; right: -8px; bottom: -8px; font-size: 72px; opacity: 0.04; }
+.card-label { font-size: 11px; color: var(--t2); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+.card-value { font-size: 30px; font-weight: 800; color: var(--t1); margin: 8px 0 4px; line-height: 1; }
+.card-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+  font-family: 'Courier New', monospace;
+}
+.up   { background: rgba(52,211,153,0.1); color: var(--green); }
+.neu  { background: rgba(251,191,36,0.1);  color: var(--amber); }
+.dn   { background: rgba(251,113,133,0.1); color: var(--rose); }
+
+.table-wrap {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+.t-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.t-title { font-size: 14px; font-weight: 700; color: var(--t1); }
+.live { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: var(--green); font-family: 'Courier New', monospace; }
+.ldot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+.t-search {
+  margin-left: auto; display: flex; align-items: center; gap: 7px;
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+  border-radius: 9px; padding: 5px 11px;
+  transition: border-color 0.15s;
+}
+.t-search:focus-within { border-color: rgba(59,130,246,0.3); }
+.t-search i { color: var(--t3); font-size: 13px; }
+.t-search input { background: none; border: none; outline: none; font-size: 12px; color: var(--t2); width: 150px; }
+.t-search input::placeholder { color: var(--t3); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { padding: 9px 16px; text-align: left; font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.7px; background: rgba(0,0,0,0.2); font-family: 'Courier New', monospace; }
+td { padding: 12px 16px; color: var(--t2); border-top: 1px solid rgba(255,255,255,0.03); }
+tr:hover td { background: rgba(255,255,255,0.015); }
+td strong { color: var(--t1); font-weight: 600; }
+td small { color: var(--t3); font-size: 11px; }
+.ref { font-size: 11px; font-family: 'Courier New', monospace; color: var(--blue); background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.15); padding: 2px 7px; border-radius: 5px; }
+.status { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; font-family: 'Courier New', monospace; }
+.sd { width: 5px; height: 5px; border-radius: 50%; }
+.sp { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.sp .sd { background: var(--amber); animation: blink 1.5s infinite; box-shadow: 0 0 4px var(--amber); }
+.sa { background: rgba(52,211,153,0.1);  color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.sa .sd { background: var(--green); }
+.sr { background: rgba(251,113,133,0.1); color: var(--rose);  border: 1px solid rgba(251,113,133,0.2); }
+.sr .sd { background: var(--rose); }
+.act { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; color: var(--t3); cursor: pointer; transition: all 0.15s; }
+.act:hover { background: rgba(59,130,246,0.12); color: var(--blue); border-color: rgba(59,130,246,0.3); }
+
+.v-label { position: fixed; bottom: 14px; right: 14px; font-size: 10px; color: var(--t3); font-family: 'Courier New', monospace; background: rgba(11,17,32,0.8); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; z-index: 200; }
+.v-label span { color: var(--violet); }
+</style>
+</head>
+<body>
+
+<!-- BACKDROP (non-pinned) -->
+<div class="backdrop" id="backdrop" onclick="closeMenu()"></div>
+
+<!-- ─── TOPBAR ─────────────────────────────────────── -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">AI</div>
+    <div class="logo-text">AIMS</div>
+  </div>
+
+  <div class="module-tabs" id="module-tabs">
+    <div class="mod-tab" onclick="toggleMenu('dashboard',this)"><i class="ri-dashboard-2-fill"></i>Dashboard<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('user',this)"><i class="ri-shield-user-line"></i>Users<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('client',this)"><i class="ri-group-line"></i>Clients<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('ib',this)"><i class="ri-user-star-line"></i>IB<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('aplan',this)"><i class="ri-coins-line"></i>A-Plan<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab active open" onclick="toggleMenu('mt5',this)"><i class="ri-bar-chart-box-line"></i>MT5<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('sofinx',this)"><i class="ri-funds-line"></i>Sofinx<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('tools',this)"><i class="ri-tools-line"></i>Tools<i class="ri-arrow-down-s-line chevron"></i></div>
+    <div class="mod-tab" onclick="toggleMenu('settings',this)"><i class="ri-settings-5-line"></i>Settings<i class="ri-arrow-down-s-line chevron"></i></div>
+  </div>
+
+  <div class="topbar-right">
+    <!-- orientation selector -->
+    <div class="orient-toggle">
+      <div class="orient-btn sel" id="btn-top"    onclick="setOrient('top')"    title="Expand from top"><i class="ri-layout-top-line"></i></div>
+      <div class="orient-btn"    id="btn-side"   onclick="setOrient('side')"   title="Expand from side"><i class="ri-layout-left-line"></i></div>
+      <div class="orient-btn"    id="btn-bottom" onclick="setOrient('bottom')" title="Expand from bottom"><i class="ri-layout-bottom-line"></i></div>
+    </div>
+    <div class="pin-btn" id="pin-btn" onclick="togglePin()" title="Pin menu open">
+      <i class="ri-pushpin-line"></i> Pin
+    </div>
+    <div class="tb-btn"><i class="ri-notification-3-line"></i></div>
+    <div class="avatar">AD</div>
+  </div>
+</div>
+
+<!-- ─── MEGA MENU (TOP) ────────────────────────────── -->
+<div class="mega-wrap" id="mega-top-wrap">
+  <div class="mega-top" id="mega-top">
+    <div class="mega-inner" id="mega-top-inner"></div>
+  </div>
+</div>
+
+<!-- ─── MEGA MENU (SIDE) ──────────────────────────── -->
+<div class="mega-side" id="mega-side">
+  <div class="mega-inner" id="mega-side-inner"></div>
+</div>
+
+<!-- ─── MEGA MENU (BOTTOM) ────────────────────────── -->
+<div class="mega-bottom" id="mega-bottom">
+  <div class="mega-inner" id="mega-bottom-inner"></div>
+</div>
+
+<!-- ─── WORKSPACE ─────────────────────────────────── -->
+<div class="workspace" id="workspace">
+  <div class="content">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pending Application</div>
+        <div class="page-crumb">// MT5_MANAGEMENT · PENDING_APPLICATION</div>
+      </div>
+      <button class="create-btn"><i class="ri-add-line"></i>Create MT5 Account</button>
+    </div>
+
+    <div class="cards">
+      <div class="card c-blue">
+        <div class="card-shine"></div>
+        <div class="card-bg"><i class="ri-file-list-3-line"></i></div>
+        <div class="card-label">Total Pending</div>
+        <div class="card-value">124</div>
+        <span class="card-badge up">↑ 12 today</span>
+      </div>
+      <div class="card c-green">
+        <div class="card-shine"></div>
+        <div class="card-bg"><i class="ri-check-double-line"></i></div>
+        <div class="card-label">Approved Today</div>
+        <div class="card-value">38</div>
+        <span class="card-badge up">↑ 5 vs last wk</span>
+      </div>
+      <div class="card c-amber">
+        <div class="card-shine"></div>
+        <div class="card-bg"><i class="ri-time-line"></i></div>
+        <div class="card-label">Awaiting Review</div>
+        <div class="card-value">86</div>
+        <span class="card-badge neu">3 days oldest</span>
+      </div>
+      <div class="card c-rose">
+        <div class="card-shine"></div>
+        <div class="card-bg"><i class="ri-close-circle-line"></i></div>
+        <div class="card-label">Rejected</div>
+        <div class="card-value">11</div>
+        <span class="card-badge dn">↓ 2 this mth</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="t-head">
+        <div class="t-title">Recent Applications</div>
+        <div class="live"><div class="ldot"></div>LIVE</div>
+        <div class="t-search">
+          <i class="ri-search-line"></i>
+          <input type="text" placeholder="Search...">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>User</th><th>Region</th><th>Parent Ref</th><th>MT5 Account</th><th>Submitted</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>John Lee</strong><br><small>john@example.com</small></td>
+            <td>Malaysia</td>
+            <td><span class="ref">REF-1042</span></td>
+            <td>USD · 1:100</td>
+            <td><small>21 Apr 2026, 09:14</small></td>
+            <td><span class="status sp"><span class="sd"></span>PENDING</span></td>
+            <td><span class="act"><i class="ri-more-fill"></i></span></td>
+          </tr>
+          <tr>
+            <td><strong>Sarah Tan</strong><br><small>sarah@example.com</small></td>
+            <td>Singapore</td>
+            <td><span class="ref">REF-0981</span></td>
+            <td>USD · 1:200</td>
+            <td><small>21 Apr 2026, 08:52</small></td>
+            <td><span class="status sa"><span class="sd"></span>APPROVED</span></td>
+            <td><span class="act"><i class="ri-more-fill"></i></span></td>
+          </tr>
+          <tr>
+            <td><strong>Ahmad Faiz</strong><br><small>ahmad@example.com</small></td>
+            <td>Indonesia</td>
+            <td><span style="color:var(--t3)">—</span></td>
+            <td>USD · —</td>
+            <td><small>20 Apr 2026, 17:30</small></td>
+            <td><span class="status sr"><span class="sd"></span>REJECTED</span></td>
+            <td><span class="act"><i class="ri-more-fill"></i></span></td>
+          </tr>
+          <tr>
+            <td><strong>Wei Xin</strong><br><small>wei@example.com</small></td>
+            <td>China</td>
+            <td><span class="ref">REF-1100</span></td>
+            <td>USD · 1:500</td>
+            <td><small>20 Apr 2026, 15:10</small></td>
+            <td><span class="status sp"><span class="sd"></span>PENDING</span></td>
+            <td><span class="act"><i class="ri-more-fill"></i></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div class="v-label">DESIGN_PREVIEW <span>v4</span> · MEGA_MENU</div>
+
+<script>
+const modules = {
+  dashboard: {
+    label: 'DASHBOARD', icon: 'ri-dashboard-2-fill',
+    pages: [
+      { label: 'Overview', sub: 'Home dashboard', icon: 'ri-home-4-line', active: true }
+    ]
+  },
+  user: {
+    label: 'USER_MANAGEMENT', icon: 'ri-shield-user-line',
+    pages: [
+      { label: 'User Listing',               sub: 'All admin users',            icon: 'ri-user-line' },
+      { label: 'Pending Revenue',            sub: 'Revenue transactions',       icon: 'ri-money-dollar-circle-line' },
+    ]
+  },
+  client: {
+    label: 'CLIENT_MANAGEMENT', icon: 'ri-group-line',
+    pages: [
+      { label: 'Client Listing',             sub: 'All clients',                icon: 'ri-contacts-line' },
+      { label: 'Pending Application',        sub: 'Awaiting approval',          icon: 'ri-file-list-3-line' },
+      { label: 'Pending Transaction',        sub: 'In-progress payments',       icon: 'ri-exchange-line' },
+      { label: 'Leverage Update',            sub: 'Leverage change requests',   icon: 'ri-scales-line' },
+    ]
+  },
+  ib: {
+    label: 'IB_MANAGEMENT', icon: 'ri-user-star-line',
+    pages: [
+      { label: 'Project Listing',            sub: 'All IB projects',            icon: 'ri-folder-line' },
+      { label: 'Commission Payout',          sub: 'Payout management',          icon: 'ri-bank-card-line' },
+      { label: 'External Payout',            sub: 'Third-party payouts',        icon: 'ri-send-plane-line' },
+      { label: 'Manual Commission',          sub: 'Override commissions',       icon: 'ri-hand-coin-line' },
+      { label: 'Auto Payout Setting',        sub: 'Schedule automation',        icon: 'ri-settings-4-line' },
+    ]
+  },
+  aplan: {
+    label: 'A_PLAN_MANAGEMENT', icon: 'ri-coins-line',
+    groups: [
+      {
+        label: 'ACCOUNTS',
+        pages: [
+          { label: 'Symbol Group',           sub: 'Trading symbol groups',      icon: 'ri-price-tag-3-line' },
+          { label: 'Top Sales Account',      sub: 'Leaderboard accounts',       icon: 'ri-trophy-line' },
+          { label: 'IB / Trader Account',    sub: 'IB trading accounts',        icon: 'ri-user-star-line' },
+          { label: 'Pending Application',    sub: 'Awaiting approval',          icon: 'ri-file-list-3-line' },
+          { label: 'Network List',           sub: 'Downline tree view',         icon: 'ri-git-merge-line' },
+        ]
+      },
+      {
+        label: 'COMMISSIONS',
+        pages: [
+          { label: 'Partner Offer',          sub: 'Confirm partner offers',     icon: 'ri-handshake-line' },
+          { label: 'Commission Payout',      sub: 'Payout management',          icon: 'ri-bank-card-line' },
+          { label: 'Manual Commission',      sub: 'Override commissions',       icon: 'ri-hand-coin-line' },
+          { label: 'Downline Report',        sub: 'Network commission report',  icon: 'ri-bar-chart-grouped-line' },
+        ]
+      }
+    ]
+  },
+  mt5: {
+    label: 'MT5_MANAGEMENT', icon: 'ri-bar-chart-box-line',
+    pages: [
+      { label: 'MT5 Settings',               sub: 'Server configuration',       icon: 'ri-settings-5-line' },
+      { label: 'Pending Application',        sub: 'Awaiting approval',          icon: 'ri-file-list-3-line', active: true },
+    ]
+  },
+  sofinx: {
+    label: 'SOFINX_TRADE_TEAM', icon: 'ri-funds-line',
+    groups: [
+      {
+        label: 'SOFINX',
+        pages: [
+          { label: 'Commission Plan',        sub: 'Plan linkage',               icon: 'ri-link-m' },
+          { label: 'Investor List',          sub: 'All investors',              icon: 'ri-group-line' },
+          { label: 'Position List',          sub: 'Open positions',             icon: 'ri-list-check' },
+          { label: 'Deposit',                sub: 'Deposit management',         icon: 'ri-arrow-down-circle-line' },
+          { label: 'Withdrawal',             sub: 'Withdrawal management',      icon: 'ri-arrow-up-circle-line' },
+          { label: 'Symbols List',           sub: 'Trading symbols',            icon: 'ri-funds-line' },
+        ]
+      },
+      {
+        label: 'TRADE_TEAM',
+        pages: [
+          { label: 'Max Rebate Details',     sub: 'Project rebates',            icon: 'ri-percent-line' },
+          { label: 'Payout Details',         sub: 'Project payouts',            icon: 'ri-bank-card-line' },
+        ]
+      }
+    ]
+  },
+  tools: {
+    label: 'EXTRA_FEATURES', icon: 'ri-tools-line',
+    groups: [
+      {
+        label: 'MT4_TOOLS',
+        pages: [
+          { label: 'EXCOM Records',          sub: 'EXCOM database records',     icon: 'ri-database-line' },
+          { label: 'Enable / Disable MT4',   sub: 'Toggle MT4 accounts',        icon: 'ri-toggle-line' },
+          { label: 'Create MT4 Group',       sub: 'New group setup',            icon: 'ri-add-circle-line' },
+          { label: 'Bulk Transaction',       sub: 'MT4/MT5 bulk actions',       icon: 'ri-loop-left-line' },
+        ]
+      },
+      {
+        label: 'TRADE_TOOLS',
+        pages: [
+          { label: 'Check Trade Record',     sub: 'Lookup trade history',       icon: 'ri-search-line' },
+          { label: 'Insert Trade Record',    sub: 'Manual trade entry',         icon: 'ri-file-add-line' },
+          { label: 'Rerun Trade Sum',        sub: 'Recalculate summaries',      icon: 'ri-restart-line' },
+          { label: 'Missing Trade Record',   sub: 'Find gaps in records',       icon: 'ri-error-warning-line' },
+        ]
+      },
+      {
+        label: 'CONFIG',
+        pages: [
+          { label: 'Update PSP',             sub: "Update user's PSP",          icon: 'ri-user-settings-line' },
+          { label: 'Notification Setting',   sub: 'Alert configuration',        icon: 'ri-notification-4-line' },
+          { label: 'Update MT5 Comment',     sub: 'Comment management',         icon: 'ri-chat-1-line' },
+        ]
+      }
+    ]
+  },
+  settings: {
+    label: 'SETTINGS', icon: 'ri-settings-5-line',
+    groups: [
+      {
+        label: 'ACCESS_CONTROL',
+        pages: [
+          { label: 'E-Wallet Upload',        sub: 'Upload wallet data',         icon: 'ri-upload-cloud-line' },
+          { label: 'Manage PSP',             sub: 'Payment service providers',  icon: 'ri-bank-card-2-line' },
+          { label: 'Roles',                  sub: 'Role management',            icon: 'ri-shield-line' },
+          { label: 'Permissions',            sub: 'Permission matrix',          icon: 'ri-lock-line' },
+          { label: 'Users',                  sub: 'Admin user accounts',        icon: 'ri-user-settings-line' },
+        ]
+      },
+      {
+        label: 'SYSTEM',
+        pages: [
+          { label: 'Exchange Rate',          sub: 'Currency rates',             icon: 'ri-currency-line' },
+          { label: 'Bank Accounts',          sub: 'Bank management',            icon: 'ri-bank-line' },
+          { label: 'Email Management',       sub: 'Email templates & config',   icon: 'ri-mail-settings-line' },
+          { label: 'Configuration',          sub: 'System settings',            icon: 'ri-settings-3-line' },
+          { label: 'Admin Logs',             sub: 'Audit trail',                icon: 'ri-admin-line' },
+          { label: 'Change Password',        sub: 'Update credentials',         icon: 'ri-lock-password-line' },
+        ]
+      }
+    ]
+  }
+};
+
+let orient     = 'top';   // 'top' | 'side' | 'bottom'
+let pinned     = false;
+let activeKey  = 'mt5';
+
+/* ── helpers ────────────────────────────────────────── */
+function buildInner(key, containerId) {
+  const m = modules[key];
+  const c = document.getElementById(containerId);
+
+  const renderCards = (pages) => pages.map(p => `
+    <a class="mega-card ${p.active ? 'active' : ''}" href="#">
+      <div class="mc-icon"><i class="${p.icon}"></i></div>
+      <div class="mc-text">
+        <div class="mc-label">${p.label}</div>
+        <div class="mc-sub">${p.sub}</div>
+      </div>
+    </a>`).join('');
+
+  let html = `
+    <div class="mega-header">
+      <div class="mega-module-name"><i class="${m.icon}"></i>${m.label}</div>
+      <div class="mega-close" onclick="closeMenu()"><i class="ri-close-line"></i></div>
+    </div>`;
+
+  if (m.groups) {
+    html += `<div style="display:flex;gap:24px;flex-wrap:wrap">`;
+    m.groups.forEach(g => {
+      html += `<div class="mega-group" style="flex:1;min-width:200px">
+        <div class="mega-group-label">${g.label}</div>
+        <div class="mega-grid">${renderCards(g.pages)}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<div class="mega-grid">${renderCards(m.pages)}</div>`;
+  }
+
+  c.innerHTML = html;
+}
+
+function showMenu(key) {
+  buildInner(key, `mega-${orient}-inner`);
+
+  if (orient === 'top') {
+    document.getElementById('mega-top').classList.add('open');
+  } else if (orient === 'side') {
+    document.getElementById('mega-side').classList.add('open');
+    if (pinned) document.getElementById('workspace').classList.add('side-pinned');
+  } else {
+    document.getElementById('mega-bottom').classList.add('open');
+  }
+
+  if (!pinned) document.getElementById('backdrop').classList.add('on');
+}
+
+function closeMenu(force) {
+  ['mega-top','mega-side','mega-bottom'].forEach(id => {
+    document.getElementById(id).classList.remove('open','pinned-open');
+  });
+  document.getElementById('workspace').classList.remove('side-pinned');
+  document.getElementById('backdrop').classList.remove('on');
+  document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('open'));
+
+  if (!force) {
+    // restore active tab marker without open chevron
+    document.querySelectorAll('.mod-tab').forEach((t,i) => {
+      const keys = Object.keys(modules);
+      if (keys[i] === activeKey) t.classList.add('active');
+    });
+  }
+}
+
+function toggleMenu(key, el) {
+  const panel = document.getElementById(`mega-${orient}`);
+  const alreadyOpen = panel.classList.contains('open') || panel.classList.contains('pinned-open');
+
+  // Close all first
+  ['mega-top','mega-side','mega-bottom'].forEach(id =>
+    document.getElementById(id).classList.remove('open','pinned-open')
+  );
+  document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('open','active'));
+
+  if (alreadyOpen && activeKey === key) {
+    document.getElementById('backdrop').classList.remove('on');
+    document.getElementById('workspace').classList.remove('side-pinned');
+    // mark active without open
+    el.classList.add('active');
+    activeKey = key;
+    return;
+  }
+
+  activeKey = key;
+  el.classList.add('open', 'active');
+  showMenu(key);
+}
+
+/* pin / unpin */
+function togglePin() {
+  pinned = !pinned;
+  const btn = document.getElementById('pin-btn');
+  btn.classList.toggle('pinned', pinned);
+  btn.innerHTML = `<i class="${pinned ? 'ri-pushpin-fill' : 'ri-pushpin-line'}"></i> ${pinned ? 'Pinned' : 'Pin'}`;
+
+  const panel = document.getElementById(`mega-${orient}`);
+  if (pinned) {
+    document.getElementById('backdrop').classList.remove('on');
+    if (panel.classList.contains('open')) {
+      panel.classList.remove('open');
+      panel.classList.add('pinned-open');
+    }
+    if (orient === 'side') document.getElementById('workspace').classList.add('side-pinned');
+  } else {
+    if (panel.classList.contains('pinned-open')) {
+      panel.classList.remove('pinned-open');
+      panel.classList.add('open');
+      document.getElementById('backdrop').classList.add('on');
+    }
+    document.getElementById('workspace').classList.remove('side-pinned');
+  }
+}
+
+/* orientation switch */
+function setOrient(o) {
+  // close current
+  const old = document.getElementById(`mega-${orient}`);
+  const wasOpen = old.classList.contains('open') || old.classList.contains('pinned-open');
+  old.classList.remove('open','pinned-open');
+  document.getElementById('workspace').classList.remove('side-pinned');
+  document.getElementById('backdrop').classList.remove('on');
+
+  orient = o;
+  ['top','side','bottom'].forEach(x => {
+    document.getElementById(`btn-${x}`).classList.toggle('sel', x === o);
+  });
+
+  // if a tab was open, reopen in new orientation
+  if (wasOpen && activeKey) {
+    buildInner(activeKey, `mega-${orient}-inner`);
+    const panel = document.getElementById(`mega-${orient}`);
+    if (pinned) {
+      panel.classList.add('pinned-open');
+      if (orient === 'side') document.getElementById('workspace').classList.add('side-pinned');
+    } else {
+      panel.classList.add('open');
+      document.getElementById('backdrop').classList.add('on');
+    }
+  }
+}
+
+// init: open MT5 in top by default
+document.querySelectorAll('.mod-tab').forEach((t, i) => {
+  if (Object.keys(modules)[i] === 'mt5') {
+    t.classList.add('open','active');
+  }
+});
+showMenu('mt5');
+</script>
+</body>
+</html>

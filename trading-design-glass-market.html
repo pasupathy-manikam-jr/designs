@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glass Market - Trading Platform Concept</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #090b16;
+    --surface: rgba(16, 18, 34, 0.52);
+    --border: rgba(255, 255, 255, 0.12);
+    --text: #f3f5ff;
+    --muted: #a5afd2;
+    --blue: #7dd3fc;
+    --violet: #a78bfa;
+    --mint: #5eead4;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at 18% 18%, rgba(125, 211, 252, 0.28), transparent 22%),
+      radial-gradient(circle at 80% 12%, rgba(167, 139, 250, 0.28), transparent 24%),
+      radial-gradient(circle at 72% 78%, rgba(94, 234, 212, 0.2), transparent 30%),
+      linear-gradient(180deg, #0f1225, var(--bg));
+  }
+
+  .shell {
+    width: min(1220px, calc(100% - 32px));
+    margin: 24px auto;
+    padding: 24px;
+  }
+
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .back, .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(18px);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    margin-bottom: 22px;
+  }
+
+  .hero h1 {
+    margin: 0 0 10px;
+    font-size: clamp(2.7rem, 5vw, 4.5rem);
+    letter-spacing: -0.06em;
+    line-height: 0.94;
+  }
+
+  .hero p {
+    max-width: 760px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    gap: 18px;
+  }
+
+  .glass {
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: var(--surface);
+    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(26px) saturate(140%);
+    -webkit-backdrop-filter: blur(26px) saturate(140%);
+  }
+
+  .main-card {
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .metric, .side-card {
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .metric small, .section-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .metric strong {
+    font-size: 28px;
+  }
+
+  .chart {
+    min-height: 380px;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(125, 211, 252, 0.16), transparent 28%),
+      linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  }
+
+  .chart::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 1px, transparent 1px, transparent 72px),
+      repeating-linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 1px, transparent 1px, transparent 58px);
+  }
+
+  .chart::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 40px;
+    height: 180px;
+    border-radius: 999px 999px 0 0;
+    background: linear-gradient(180deg, rgba(125, 211, 252, 0.45), rgba(167, 139, 250, 0.08));
+    clip-path: polygon(0 88%, 8% 72%, 18% 78%, 28% 38%, 42% 49%, 55% 18%, 70% 35%, 82% 14%, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .side {
+    display: grid;
+    gap: 18px;
+  }
+
+  .quote {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .quote strong {
+    display: block;
+    font-size: 24px;
+  }
+
+  .quote span {
+    color: var(--mint);
+    font-weight: 700;
+  }
+
+  .order-box {
+    display: grid;
+    gap: 12px;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .cta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .cta {
+    padding: 14px 0;
+    border-radius: 16px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .buy { background: linear-gradient(135deg, #5eead4, #7dd3fc); color: #06111a; }
+  .sell { background: rgba(255,255,255,0.08); }
+
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="back" href="designs">Back to designs</a>
+      <span class="chip">Trading Concept 2</span>
+    </div>
+
+    <section class="hero">
+      <h1>Glass Market</h1>
+      <p>
+        A premium, brand-led trading interface with soft glass surfaces, luminous KPI cards, and layered modules. This direction is best when the platform needs to feel polished and aspirational without losing market readability.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="glass main-card">
+        <div class="metrics">
+          <div class="metric"><small>Total equity</small><strong>$4.28M</strong></div>
+          <div class="metric"><small>Open P&amp;L</small><strong style="color: var(--mint);">+$184K</strong></div>
+          <div class="metric"><small>Win rate</small><strong>64.2%</strong></div>
+        </div>
+        <div class="chart"></div>
+      </div>
+
+      <div class="side">
+        <div class="glass side-card">
+          <span class="section-label">Featured Market</span>
+          <div class="quote">
+            <div><strong>BTC/USD</strong><div style="color: var(--muted);">Momentum setup</div></div>
+            <span>+3.14%</span>
+          </div>
+        </div>
+
+        <div class="glass side-card order-box">
+          <span class="section-label">Quick Ticket</span>
+          <div class="row"><span>Order type</span><strong>Stop Limit</strong></div>
+          <div class="row"><span>Size</span><strong>0.85 BTC</strong></div>
+          <div class="row"><span>Entry band</span><strong>64,280 - 64,510</strong></div>
+          <div class="cta-row">
+            <div class="cta buy">Buy</div>
+            <div class="cta sell">Sell</div>
+          </div>
+        </div>
+
+        <div class="glass side-card">
+          <span class="section-label">Mood</span>
+          <div style="font-size: 22px; font-weight: 700;">Luxury retail terminal</div>
+          <div style="margin-top: 10px; color: var(--muted); line-height: 1.7;">
+            Floating cards, clean spacing, and rich visual hierarchy for dashboards that need a strong product identity.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

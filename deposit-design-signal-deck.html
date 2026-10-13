@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Deck - Deposit Design Concept</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #08111d;
+    --bg2: #0d1b30;
+    --panel: rgba(10, 18, 33, 0.86);
+    --border: rgba(148, 163, 184, 0.16);
+    --text: #edf4ff;
+    --muted: #88a2c8;
+    --blue: #5fa8ff;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top right, rgba(95, 168, 255, 0.14), transparent 28%),
+      linear-gradient(180deg, var(--bg2), var(--bg));
+  }
+
+  .shell {
+    width: min(1280px, calc(100% - 32px));
+    margin: 24px auto;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background:
+      linear-gradient(180deg, rgba(12, 23, 42, 0.94), rgba(7, 14, 27, 0.98));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+  }
+
+  .topline, .hero-metrics, .card-head, .card-footer {
+    display: flex;
+    align-items: center;
+  }
+
+  .topline {
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .back, .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  .hero-panel, .sidebar, .method-card {
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    background: var(--panel);
+  }
+
+  .hero-panel {
+    padding: 24px;
+    background:
+      radial-gradient(circle at top right, rgba(95, 168, 255, 0.16), transparent 22%),
+      linear-gradient(180deg, rgba(14, 27, 49, 0.96), rgba(9, 16, 31, 0.98));
+  }
+
+  .hero-panel h1 {
+    margin: 0 0 12px;
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.06em;
+  }
+
+  .hero-panel p,
+  .sidebar p,
+  .card-copy p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .hero-metrics {
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .metric {
+    flex: 1 1 180px;
+    padding: 15px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .metric small,
+  .card-copy small,
+  .eyebrow {
+    display: block;
+    color: rgba(255, 255, 255, 0.62);
+    margin-bottom: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .metric strong {
+    font-size: 22px;
+  }
+
+  .sidebar {
+    padding: 22px;
+    background:
+      radial-gradient(circle at bottom left, rgba(95, 168, 255, 0.1), transparent 28%),
+      linear-gradient(180deg, rgba(10, 18, 33, 0.98), rgba(11, 19, 35, 0.98));
+  }
+
+  .sidebar h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+  }
+
+  .sidebar-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .sidebar-item {
+    padding: 14px 15px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .sidebar-item strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-item span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .method-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 250px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(circle at top right, rgba(var(--card-rgb), 0.18), transparent 28%),
+      linear-gradient(180deg, rgba(15, 27, 48, 0.98), rgba(8, 15, 28, 0.98));
+    border-color: rgba(var(--card-rgb), 0.26);
+  }
+
+  .method-card::before {
+    content: "";
+    position: absolute;
+    top: -44px;
+    right: -36px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--card-rgb), 0.22), transparent 70%);
+  }
+
+  .card-head,
+  .card-footer {
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--card-rgb), 0.32);
+    background: rgba(var(--card-rgb), 0.12);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .logo-shell {
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 18px 0 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo-shell img {
+    max-width: 72%;
+    max-height: 46px;
+    object-fit: contain;
+  }
+
+  .card-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-copy h3 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+  }
+
+  .card-footer {
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .chip-soft {
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+  }
+
+  .cta {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1024px) {
+    .hero,
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="back" href="designs">Back to designs</a>
+      <span class="chip">Deposit Concept 1</span>
+    </div>
+
+    <section class="hero">
+      <div class="hero-panel">
+        <h1>Signal Deck</h1>
+        <p>
+          A stronger deposit selection stage for the client dashboard. This direction treats PSP selection like an intentional trading action, with bolder card hierarchy, visible trust cues, and cleaner “why choose this rail” messaging.
+        </p>
+        <div class="hero-metrics">
+          <div class="metric"><small>Design mood</small><strong>Trading-grade</strong></div>
+          <div class="metric"><small>Best for</small><strong>Dark dashboard</strong></div>
+          <div class="metric"><small>Focus</small><strong>Clear choice</strong></div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <h2>Why it works</h2>
+        <p>The old PSP boxes feel passive. This version makes each payment route feel like a premium lane with clearer status, better logo framing, and a stronger CTA.</p>
+        <div class="sidebar-list">
+          <div class="sidebar-item"><strong>Better scan path</strong><span>Category, logo, title, rail description, and action all read in one vertical sweep.</span></div>
+          <div class="sidebar-item"><strong>More premium tone</strong><span>Subtle glows and depth without looking like a generic crypto dashboard.</span></div>
+          <div class="sidebar-item"><strong>Reusable structure</strong><span>The same card pattern can handle bank transfer, crypto, and gateway methods consistently.</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <article class="method-card" style="--card-rgb: 64, 217, 255;">
+        <div class="card-head"><span class="eyebrow">Bank Transfer</span><span class="status">Featured</span></div>
+        <div class="logo-shell"><img src="img/payment-gateway/bank-transfer.png" alt="Bank Transfer"></div>
+        <div class="card-copy">
+          <small>Manual route</small>
+          <h3>Local Bank Transfer</h3>
+          <p>Fast assisted funding with a local settlement path and a clearer trust-first presentation.</p>
+        </div>
+        <div class="card-footer"><span class="chip-soft">Transfer flow</span><span class="cta">Connect flow</span></div>
+      </article>
+
+      <article class="method-card" style="--card-rgb: 249, 115, 22;">
+        <div class="card-head"><span class="eyebrow">Crypto Rail</span><span class="status">USDT</span></div>
+        <div class="logo-shell"><img src="img/payment-gateway/usdt.png" alt="USDT"></div>
+        <div class="card-copy">
+          <small>Stablecoin</small>
+          <h3>USDT Deposit</h3>
+          <p>Crypto methods become easier to trust when they get a dedicated lane instead of blending into all the generic PSP tiles.</p>
+        </div>
+        <div class="card-footer"><span class="chip-soft">Chain-aware</span><span class="cta">Launch rail</span></div>
+      </article>
+
+      <article class="method-card" style="--card-rgb: 95, 168, 255;">
+        <div class="card-head"><span class="eyebrow">Gateway</span><span class="status">Live</span></div>
+        <div class="logo-shell"><img src="img/payment-gateway/gfpay.png" alt="GF Pay"></div>
+        <div class="card-copy">
+          <small>Regional PSP</small>
+          <h3>GF Pay</h3>
+          <p>Structured PSP card with enough room for supported rails, copy, and a stronger call to action.</p>
+        </div>
+        <div class="card-footer"><span class="chip-soft">Guided form</span><span class="cta">Open method</span></div>
+      </article>
+
+      <article class="method-card" style="--card-rgb: 57, 217, 138;">
+        <div class="card-head"><span class="eyebrow">Gateway</span><span class="status">Fast</span></div>
+        <div class="logo-shell"><img src="img/payment-gateway/fasapay.png" alt="FasaPay"></div>
+        <div class="card-copy">
+          <small>Wallet route</small>
+          <h3>FasaPay</h3>
+          <p>Wallet-based methods feel more premium here instead of reading like flat dashboard utility boxes.</p>
+        </div>
+        <div class="card-footer"><span class="chip-soft">Quick funding</span><span class="cta">Use route</span></div>
+      </article>
+
+      <article class="method-card" style="--card-rgb: 168, 85, 247;">
+        <div class="card-head"><span class="eyebrow">Gateway</span><span class="status">Secure</span></div>
+        <div class="logo-shell"><img src="img/payment-gateway/skrill.png" alt="Skrill"></div>
+        <div class="card-copy">
+          <small>Global wallet</small>
+          <h3>Skrill</h3>
+          <p>A cleaner card shell for methods that need to feel trustworthy first and feature-rich second.</p>
+        </div>
+        <div class="card-footer"><span class="chip-soft">Protected route</span><span class="cta">Continue</span></div>
+      </article>
+
+      <article class="method-card" style="--card-rgb: 245, 158, 11;">
+        <div class="card-head"><span class="eyebrow">Gateway</span><span class="status">Online</span></div>
+        <div class="logo-shell"><img src="img/payment-gateway/billplz.png" alt="Billplz"></div>
+        <div class="card-copy">
+          <small>Online banking</small>
+          <h3>Billplz</h3>
+          <p>The final state is much less “admin box grid” and much more “intended payment selection experience.”</p>
+        </div>
+        <div class="card-footer"><span class="chip-soft">Ready to connect</span><span class="cta">Start route</span></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

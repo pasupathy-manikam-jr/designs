@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two-Factor Authentication Guide</title>
+<style>
+  :root {
+    --bg: #f5f6fa; --card: #fff; --text: #1d2130; --muted: #6b7183; --line: #e6e8ef;
+    --accent: #4f46e5; --accent-soft: #eef0ff; --warn: #b45309; --warn-soft: #fff7e8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1117; --card: #181b24; --text: #e7e9f0; --muted: #9298aa; --line: #262a36;
+      --accent: #8b85ff; --accent-soft: #23234a; --warn: #f5b454; --warn-soft: #2c2414;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 56px 16px 72px; }
+  header { margin-bottom: 36px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.15; margin: 10px 0 8px; letter-spacing: -.02em; }
+  header p { margin: 0; color: var(--muted); }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
+  h2 { display: flex; align-items: center; gap: 12px; font-size: 19px; margin: 0 0 18px; }
+  h2 .icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); flex: none; }
+  ol { list-style: none; counter-reset: step; margin: 0; padding: 0; }
+  li { counter-increment: step; position: relative; padding: 0 0 16px 44px; }
+  li:last-child { padding-bottom: 0; }
+  li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 600; background: var(--accent-soft); color: var(--accent); }
+  li:not(:last-child)::after { content: ""; position: absolute; left: 13.5px; top: 32px; bottom: 4px; width: 1px; background: var(--line); }
+  strong { font-weight: 600; }
+  .note { display: flex; gap: 14px; background: var(--warn-soft); border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent); color: var(--text); border-radius: 14px; padding: 18px 20px; }
+  .note svg { color: var(--warn); flex: none; margin-top: 2px; }
+  .note b { color: var(--warn); }
+  svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="eyebrow">Account security</span>
+    <h1>Two-Factor Authentication</h1>
+    <p>Add a second layer of protection to your account using an authenticator app on your phone.</p>
+  </header>
+
+  <section>
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>Enable 2FA</h2>
+    <ol>
+      <li>Log in with your email and password.</li>
+      <li>Click the profile icon at the top right and choose <strong>Security Profile</strong>.</li>
+      <li>Click <strong>Enable</strong>.</li>
+      <li>Confirm your password and submit.</li>
+      <li>You'll be redirected to a page showing a <strong>QR code</strong> and your <strong>recovery codes</strong>.</li>
+      <li>Copy the recovery codes and keep them somewhere safe.</li>
+      <li>Scan the QR code with an authenticator app such as Google Authenticator or Microsoft Authenticator (available on the Play Store and App Store).</li>
+      <li>Your account is now added to the authenticator app.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/></svg></span>Log in with 2FA</h2>
+    <ol>
+      <li>Log out.</li>
+      <li>Log back in with your email and password.</li>
+      <li>When the 2FA form appears, enter the one-time password (OTP) shown in your authenticator app.</li>
+      <li>Enter the code quickly — it expires after a short time.</li>
+      <li>Alternatively, use one of your saved recovery codes.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span>Disable 2FA</h2>
+    <ol>
+      <li>Log in with your email and password.</li>
+      <li>Click the profile icon at the top right and choose <strong>Security Profile</strong>.</li>
+      <li>Click <strong>Disable</strong>.</li>
+      <li>Confirm your password.</li>
+      <li>You'll be redirected and 2FA is now disabled.</li>
+    </ol>
+  </section>
+
+  <div class="note" role="note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+    <div><b>Important:</b> if you disable 2FA and enable it again, remove the old entry from your authenticator app and scan the new QR code.</div>
+  </div>
+</main>
+</body>
+</html>

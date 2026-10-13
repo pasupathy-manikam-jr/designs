@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Designs</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: flex; font: 14px/1.4 system-ui, sans-serif; color: #1a1a1a; background: #fafafa; }
+  nav { width: 260px; flex: none; overflow-y: auto; padding: 16px 10px; border-right: 1px solid #ddd; }
+  iframe { flex: 1; border: 0; height: 100%; background: #fff; }
+  h1 { font-size: 18px; margin: 0 8px 8px; }
+  h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #666; margin: 20px 8px 4px; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li a { display: block; padding: 6px 8px; border-radius: 6px; color: #2457d6; text-decoration: none; }
+  li a:hover { background: #eef2fc; }
+  li a.active { background: #2457d6; color: #fff; }
+  small { opacity: .6; margin-left: 6px; }
+  @media (max-width: 700px) {
+    body { flex-direction: column; }
+    nav { width: auto; max-height: 40vh; border-right: 0; border-bottom: 1px solid #ddd; }
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6e6e6; background: #141414; }
+    nav { border-color: #333; }
+    li a { color: #7ea6ff; }
+    li a:hover { background: #1f2533; }
+    li a.active { background: #3a6cf0; color: #fff; }
+  }
+</style>
+</head>
+<body>
+<nav>
+<h1>Designs</h1>
+
+<h2>Trading Platform</h2>
+<ul>
+  <li><a target="view" href="trading-design-atlas.html">Atlas</a></li>
+  <li><a target="view" href="trading-design-command-deck.html">Command Deck</a></li>
+  <li><a target="view" href="trading-design-glass-market.html">Glass Market</a></li>
+  <li><a target="view" href="trading-design-risk-radar.html">Risk Radar</a></li>
+  <li><a target="view" href="trading-design-split-focus.html">Split Focus</a></li>
+  <li><a target="view" href="trading-design-tape-room.html">Tape Room</a></li>
+</ul>
+
+<h2>Deposit</h2>
+<ul>
+  <li><a target="view" href="deposit-design-liquid-glass.html">Liquid Glass</a></li>
+  <li><a target="view" href="deposit-design-signal-deck.html">Signal Deck</a></li>
+  <li><a target="view" href="deposit-design-trust-ledger.html">Trust Ledger</a></li>
+</ul>
+
+<h2>Navigation — AIMS Admin</h2>
+<ul>
+  <li><a target="view" href="nav-design-preview.html">Alternative Nav Design</a></li>
+  <li><a target="view" href="nav-design-preview-v2.html">Nav Design v2</a></li>
+  <li><a target="view" href="nav-design-preview-v3.html">Nav Design v3</a></li>
+  <li><a target="view" href="nav-design-preview-v4.html">Nav Design v4 — Mega Menu</a></li>
+</ul>
+
+<h2>Other</h2>
+<ul>
+  <li><a target="view" href="client2-login-video.html">AIMS Client Login Video</a></li>
+  <li><a target="view" href="landing-page-event-1-replica-v2.html">Event 1 Landing Page Replica</a></li>
+  <li><a target="view" href="2fa.html">2FA</a></li>
+</ul>
+
+<h2>Older index pages</h2>
+<ul>
+  <li><a target="view" href="designs5.html">Design Previews</a><small>designs5.html</small></li>
+  <li><a target="view" href="nav-designs.html">Design Previews</a><small>nav-designs.html</small></li>
+</ul>
+</nav>
+<iframe name="view" src="trading-design-atlas.html" title="Design preview"></iframe>
+<script>
+  const links = document.querySelectorAll('nav a');
+  const mark = a => { links.forEach(l => l.classList.toggle('active', l === a)); };
+  links.forEach(a => a.addEventListener('click', () => mark(a)));
+  mark(links[0]);
+</script>
+</body>
+</html>

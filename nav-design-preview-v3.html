@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nav Design v3 — AIMS Admin</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #06080f;
+  --surface:  #0c1120;
+  --surface2: #101827;
+  --border:   rgba(255,255,255,0.06);
+  --blue:     #3b82f6;
+  --violet:   #8b5cf6;
+  --cyan:     #22d3ee;
+  --green:    #34d399;
+  --amber:    #fbbf24;
+  --rose:     #fb7185;
+  --text-1:   #e8f0ff;
+  --text-2:   #5a7aa8;
+  --text-3:   #1e3352;
+  --glow-blue: rgba(59,130,246,0.4);
+  --glow-vio:  rgba(139,92,246,0.4);
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── AMBIENT GRADIENT ─────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.06) 0%, rgba(139,92,246,0.04) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SLIM TOPBAR ──────────────────────────────────── */
+.topbar {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+  background: rgba(6,8,15,0.8);
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 900; color: #fff;
+  box-shadow: 0 0 16px var(--glow-blue);
+  flex-shrink: 0;
+}
+.logo-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-1);
+  letter-spacing: -0.3px;
+}
+
+/* horizontal module tab strip in topbar */
+.top-modules {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 24px;
+  height: 100%;
+}
+
+.top-mod {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 100%;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  position: relative;
+}
+.top-mod:hover { color: var(--text-1); }
+.top-mod.active {
+  color: var(--text-1);
+  border-bottom-color: var(--blue);
+  font-weight: 600;
+}
+.top-mod i { font-size: 14px; }
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tb-btn {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-2); font-size: 14px;
+  transition: all 0.15s;
+}
+.tb-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-1); }
+
+.avatar {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+  box-shadow: 0 0 12px var(--glow-blue);
+  cursor: pointer;
+}
+
+/* ── SUB-NAV STRIP ────────────────────────────────── */
+.subnav {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 4px;
+  flex-shrink: 0;
+  background: rgba(6,8,15,0.6);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 9;
+}
+.subnav::-webkit-scrollbar { display: none; }
+
+.sub-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text-2);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.sub-link:hover { background: rgba(255,255,255,0.05); color: var(--text-1); }
+.sub-link.active {
+  background: rgba(59,130,246,0.12);
+  color: #93c5fd;
+  font-weight: 600;
+}
+.sub-link i { font-size: 13px; }
+
+/* ── MAIN CONTENT ─────────────────────────────────── */
+.workspace {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 28px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 4px; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-1);
+  letter-spacing: -0.6px;
+}
+
+.page-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 3px;
+  font-family: 'Courier New', monospace;
+}
+
+.create-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--blue), #6d28d9);
+  border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(109,40,217,0.35);
+  transition: all 0.2s;
+}
+.create-btn:hover { box-shadow: 0 6px 28px rgba(109,40,217,0.5); transform: translateY(-1px); }
+
+/* ── STAT CARDS ───────────────────────────────────── */
+.cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: default;
+}
+.card:hover { transform: translateY(-3px); }
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: var(--card-grad, linear-gradient(135deg, rgba(59,130,246,0.3), transparent 60%));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.card.c-blue  { --card-grad: linear-gradient(135deg, rgba(59,130,246,0.35), transparent 60%); }
+.card.c-green { --card-grad: linear-gradient(135deg, rgba(52,211,153,0.35), transparent 60%); }
+.card.c-amber { --card-grad: linear-gradient(135deg, rgba(251,191,36,0.35), transparent 60%); }
+.card.c-rose  { --card-grad: linear-gradient(135deg, rgba(251,113,133,0.35), transparent 60%); }
+
+.card-bg-icon {
+  position: absolute;
+  right: -10px; bottom: -10px;
+  font-size: 80px;
+  opacity: 0.04;
+  line-height: 1;
+}
+
+.card-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.7px; font-weight: 600; }
+.card-value { font-size: 32px; font-weight: 800; color: var(--text-1); margin: 8px 0 4px; line-height: 1; }
+.card-delta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+  font-family: 'Courier New', monospace;
+}
+.delta-up   { background: rgba(52,211,153,0.1); color: var(--green); }
+.delta-down { background: rgba(251,113,133,0.1); color: var(--rose); }
+.delta-neu  { background: rgba(251,191,36,0.1);  color: var(--amber); }
+
+/* ── TABLE ────────────────────────────────────────── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-toolbar {
+  display: flex; align-items: center;
+  padding: 14px 20px;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-title { font-size: 14px; font-weight: 700; color: var(--text-1); }
+
+.live-indicator {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; color: var(--green);
+  font-family: 'Courier New', monospace;
+}
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.search-bar {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 6px 12px;
+  transition: border-color 0.15s;
+}
+.search-bar:focus-within { border-color: rgba(59,130,246,0.35); }
+.search-bar i { color: var(--text-3); font-size: 13px; }
+.search-bar input { background: none; border: none; outline: none; font-size: 12px; color: var(--text-2); width: 160px; }
+.search-bar input::placeholder { color: var(--text-3); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  padding: 9px 18px; text-align: left;
+  font-size: 10px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  background: rgba(0,0,0,0.25);
+  font-family: 'Courier New', monospace;
+}
+td {
+  padding: 13px 18px;
+  color: var(--text-2);
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+tr:hover td { background: rgba(255,255,255,0.015); }
+td strong { color: var(--text-1); font-weight: 600; }
+td small { color: var(--text-3); font-size: 11px; }
+
+.ref-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: var(--blue);
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.15);
+  padding: 2px 8px; border-radius: 5px;
+}
+
+.status {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px;
+  font-family: 'Courier New', monospace; letter-spacing: 0.3px;
+}
+.s-dot { width: 5px; height: 5px; border-radius: 50%; }
+.st-pend  { background: rgba(251,191,36,0.1);   color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.st-pend  .s-dot { background: var(--amber); animation: blink 1.5s infinite; box-shadow: 0 0 4px var(--amber); }
+.st-appr  { background: rgba(52,211,153,0.1);   color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.st-appr  .s-dot { background: var(--green); }
+.st-rjct  { background: rgba(251,113,133,0.1);  color: var(--rose);  border: 1px solid rgba(251,113,133,0.2); }
+.st-rjct  .s-dot { background: var(--rose); }
+
+.act-btn {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--text-3); cursor: pointer;
+  transition: all 0.15s;
+}
+.act-btn:hover { background: rgba(59,130,246,0.12); color: var(--blue); border-color: rgba(59,130,246,0.3); }
+
+/* ── TRAY BACKDROP ────────────────────────────────── */
+.tray-backdrop {
+  position: fixed; inset: 0; z-index: 19;
+  display: none;
+}
+.tray-backdrop.on { display: block; }
+
+/* ── BOTTOM DOCK ──────────────────────────────────── */
+.dock-wrap {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* sub-tray that slides up */
+.tray {
+  background: rgba(10, 16, 28, 0.92);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(59,130,246,0.18);
+  border-radius: 18px;
+  padding: 14px 18px;
+  min-width: 320px;
+  max-width: 440px;
+  box-shadow: 0 -4px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.22s cubic-bezier(.34,1.3,.64,1);
+}
+.tray.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.tray-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 10px;
+}
+
+.tray-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+
+.tray-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.12s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tray-link:hover { background: rgba(255,255,255,0.06); color: var(--text-1); }
+.tray-link.active {
+  background: rgba(59,130,246,0.14);
+  color: #93c5fd;
+  font-weight: 600;
+}
+.tray-link i { font-size: 14px; flex-shrink: 0; }
+.tray-link span { overflow: hidden; text-overflow: ellipsis; }
+
+.tray-arrow {
+  width: 12px; height: 12px;
+  border-bottom: 2px solid rgba(59,130,246,0.3);
+  border-right: 2px solid rgba(59,130,246,0.3);
+  border-radius: 0 0 3px 0;
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  background: rgba(10,16,28,0.92);
+}
+
+/* dock bar */
+.dock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(10, 16, 28, 0.88);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03), 0 0 60px rgba(59,130,246,0.05);
+}
+
+.dock-sep {
+  width: 1px; height: 28px;
+  background: rgba(255,255,255,0.07);
+  margin: 0 2px;
+}
+
+.dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  position: relative;
+  padding: 0 2px;
+}
+
+.dock-icon {
+  width: 42px; height: 42px;
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  color: var(--text-2);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: transform 0.2s cubic-bezier(.34,1.5,.64,1), background 0.15s, color 0.15s, box-shadow 0.2s;
+}
+.dock-item:hover .dock-icon {
+  transform: scale(1.22) translateY(-4px);
+  background: rgba(59,130,246,0.12);
+  color: #93c5fd;
+}
+.dock-item.active .dock-icon {
+  background: rgba(59,130,246,0.18);
+  color: var(--blue);
+  box-shadow: 0 0 18px rgba(59,130,246,0.35), inset 0 0 0 1px rgba(59,130,246,0.3);
+}
+.dock-item.active:hover .dock-icon {
+  transform: scale(1.22) translateY(-4px);
+}
+
+.dock-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--blue);
+  opacity: 0;
+  transition: opacity 0.15s;
+  margin-top: 1px;
+}
+.dock-item.active .dock-dot { opacity: 1; }
+
+.dock-label {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10,16,28,0.95);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.dock-item:hover .dock-label { opacity: 1; }
+
+/* version label */
+.v-label {
+  position: fixed; bottom: 14px; right: 16px;
+  font-size: 10px; color: var(--text-3);
+  font-family: 'Courier New', monospace;
+  background: rgba(10,16,28,0.7);
+  border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: 20px;
+}
+.v-label span { color: var(--violet); }
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ──────────────────────────────────────── -->
+<div class="topbar">
+  <a class="logo" href="#">
+    <div class="logo-mark">AI</div>
+    <div class="logo-name">AIMS</div>
+  </a>
+
+  <div class="top-modules">
+    <div class="top-mod" onclick="switchModule('user', this)"><i class="ri-shield-user-line"></i>Users</div>
+    <div class="top-mod" onclick="switchModule('client', this)"><i class="ri-group-line"></i>Clients</div>
+    <div class="top-mod" onclick="switchModule('ib', this)"><i class="ri-user-star-line"></i>IB</div>
+    <div class="top-mod" onclick="switchModule('aplan', this)"><i class="ri-coins-line"></i>A-Plan</div>
+    <div class="top-mod active" onclick="switchModule('mt5', this)"><i class="ri-bar-chart-box-line"></i>MT5</div>
+    <div class="top-mod" onclick="switchModule('sofinx', this)"><i class="ri-funds-line"></i>Sofinx</div>
+    <div class="top-mod" onclick="switchModule('tools', this)"><i class="ri-tools-line"></i>Tools</div>
+    <div class="top-mod" onclick="switchModule('settings', this)"><i class="ri-settings-5-line"></i>Settings</div>
+  </div>
+
+  <div class="topbar-right">
+    <div class="tb-btn"><i class="ri-notification-3-line"></i></div>
+    <div class="tb-btn"><i class="ri-search-line"></i></div>
+    <div class="avatar">AD</div>
+  </div>
+</div>
+
+<!-- ── SUB-NAV ─────────────────────────────────────── -->
+<div class="subnav" id="subnav"></div>
+
+<!-- ── WORKSPACE ──────────────────────────────────── -->
+<div class="workspace">
+  <div class="content">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pending Application</div>
+        <div class="page-sub">// MT5_MANAGEMENT · PENDING_APPLICATION</div>
+      </div>
+      <button class="create-btn"><i class="ri-add-line"></i>Create MT5 Account</button>
+    </div>
+
+    <div class="cards">
+      <div class="card c-blue">
+        <div class="card-bg-icon"><i class="ri-file-list-3-line"></i></div>
+        <div class="card-label">Total Pending</div>
+        <div class="card-value">124</div>
+        <span class="card-delta delta-up">↑ 12 today</span>
+      </div>
+      <div class="card c-green">
+        <div class="card-bg-icon"><i class="ri-check-double-line"></i></div>
+        <div class="card-label">Approved Today</div>
+        <div class="card-value">38</div>
+        <span class="card-delta delta-up">↑ 5 vs last wk</span>
+      </div>
+      <div class="card c-amber">
+        <div class="card-bg-icon"><i class="ri-time-line"></i></div>
+        <div class="card-label">Awaiting Review</div>
+        <div class="card-value">86</div>
+        <span class="card-delta delta-neu">3 days oldest</span>
+      </div>
+      <div class="card c-rose">
+        <div class="card-bg-icon"><i class="ri-close-circle-line"></i></div>
+        <div class="card-label">Rejected</div>
+        <div class="card-value">11</div>
+        <span class="card-delta delta-down">↓ 2 this mth</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div class="table-title">Recent Applications</div>
+        <div class="live-indicator"><div class="live-dot"></div>LIVE</div>
+        <div class="search-bar">
+          <i class="ri-search-line"></i>
+          <input type="text" placeholder="Search applications...">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Region</th>
+            <th>Parent Ref</th>
+            <th>MT5 Account</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>John Lee</strong><br><small>john@example.com</small></td>
+            <td>Malaysia</td>
+            <td><span class="ref-chip">REF-1042</span></td>
+            <td>USD · 1:100</td>
+            <td><small>21 Apr 2026, 09:14</small></td>
+            <td><span class="status st-pend"><span class="s-dot"></span>PENDING</span></td>
+            <td><span class="act-btn"><i class="ri-more-fill"></i></span></td>
+          </tr>
+          <tr>
+            <td><strong>Sarah Tan</strong><br><small>sarah@example.com</small></td>
+            <td>Singapore</td>
+            <td><span class="ref-chip">REF-0981</span></td>
+            <td>USD · 1:200</td>
+            <td><small>21 Apr 2026, 08:52</small></td>
+            <td><span class="status st-appr"><span class="s-dot"></span>APPROVED</span></td>
+            <td><span class="act-btn"><i class="ri-more-fill"></i></span></td>
+          </tr>
+          <tr>
+            <td><strong>Ahmad Faiz</strong><br><small>ahmad@example.com</small></td>
+            <td>Indonesia</td>
+            <td><span style="color:var(--text-3)">—</span></td>
+            <td>USD · —</td>
+            <td><small>20 Apr 2026, 17:30</small></td>
+            <td><span class="status st-rjct"><span class="s-dot"></span>REJECTED</span></td>
+            <td><span class="act-btn"><i class="ri-more-fill"></i></span></td>
+          </tr>
+          <tr>
+            <td><strong>Wei Xin</strong><br><small>wei@example.com</small></td>
+            <td>China</td>
+            <td><span class="ref-chip">REF-1100</span></td>
+            <td>USD · 1:500</td>
+            <td><small>20 Apr 2026, 15:10</small></td>
+            <td><span class="status st-pend"><span class="s-dot"></span>PENDING</span></td>
+            <td><span class="act-btn"><i class="ri-more-fill"></i></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── DOCK ────────────────────────────────────────── -->
+<div class="tray-backdrop" id="tray-backdrop" onclick="closeTray()"></div>
+
+<div class="dock-wrap">
+  <!-- Slide-up tray -->
+  <div class="tray" id="tray" style="position:relative">
+    <div class="tray-title" id="tray-title">Module</div>
+    <div class="tray-links" id="tray-links"></div>
+    <div class="tray-arrow"></div>
+  </div>
+
+  <!-- Dock bar -->
+  <div class="dock">
+    <div class="dock-item" onclick="openTray('dashboard', this)">
+      <div class="dock-icon"><i class="ri-dashboard-2-fill"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Dashboard</div>
+    </div>
+
+    <div class="dock-sep"></div>
+
+    <div class="dock-item" onclick="openTray('user', this)">
+      <div class="dock-icon"><i class="ri-shield-user-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Users</div>
+    </div>
+    <div class="dock-item" onclick="openTray('client', this)">
+      <div class="dock-icon"><i class="ri-group-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Clients</div>
+    </div>
+    <div class="dock-item" onclick="openTray('ib', this)">
+      <div class="dock-icon"><i class="ri-user-star-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">IB</div>
+    </div>
+    <div class="dock-item" onclick="openTray('aplan', this)">
+      <div class="dock-icon"><i class="ri-coins-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">A-Plan</div>
+    </div>
+    <div class="dock-item active" onclick="openTray('mt5', this)">
+      <div class="dock-icon"><i class="ri-bar-chart-box-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">MT5</div>
+    </div>
+    <div class="dock-item" onclick="openTray('sofinx', this)">
+      <div class="dock-icon"><i class="ri-funds-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Sofinx</div>
+    </div>
+
+    <div class="dock-sep"></div>
+
+    <div class="dock-item" onclick="openTray('tools', this)">
+      <div class="dock-icon"><i class="ri-tools-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Tools</div>
+    </div>
+    <div class="dock-item" onclick="openTray('content', this)">
+      <div class="dock-icon"><i class="ri-article-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Content</div>
+    </div>
+
+    <div class="dock-sep"></div>
+
+    <div class="dock-item" onclick="openTray('settings', this)">
+      <div class="dock-icon"><i class="ri-settings-5-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Settings</div>
+    </div>
+    <div class="dock-item">
+      <div class="dock-icon"><i class="ri-logout-box-r-line"></i></div>
+      <div class="dock-dot"></div>
+      <div class="dock-label">Log Out</div>
+    </div>
+  </div>
+</div>
+
+<div class="v-label">DESIGN_PREVIEW <span>v3</span> · BOTTOM_DOCK</div>
+
+<script>
+const modules = {
+  dashboard: {
+    title: 'DASHBOARD',
+    sub: [{ label: 'Overview', icon: 'ri-home-4-line', active: true }]
+  },
+  user: {
+    title: 'USER_MANAGEMENT',
+    sub: [
+      { label: 'User Listing', icon: 'ri-user-line' },
+      { label: 'Pending Revenue', icon: 'ri-money-dollar-circle-line' },
+    ]
+  },
+  client: {
+    title: 'CLIENT_MANAGEMENT',
+    sub: [
+      { label: 'Client Listing', icon: 'ri-contacts-line' },
+      { label: 'Pending Application', icon: 'ri-file-list-3-line' },
+      { label: 'Pending Transaction', icon: 'ri-exchange-line' },
+      { label: 'Leverage Update', icon: 'ri-scales-line' },
+    ]
+  },
+  ib: {
+    title: 'IB_MANAGEMENT',
+    sub: [
+      { label: 'Project Listing', icon: 'ri-folder-line' },
+      { label: 'Commission Payout', icon: 'ri-bank-card-line' },
+      { label: 'External Payout', icon: 'ri-send-plane-line' },
+      { label: 'Manual Commission', icon: 'ri-hand-coin-line' },
+      { label: 'Auto Payout Setting', icon: 'ri-settings-4-line' },
+    ]
+  },
+  aplan: {
+    title: 'A_PLAN_MANAGEMENT',
+    sub: [
+      { label: 'Symbol Group', icon: 'ri-price-tag-3-line' },
+      { label: 'Top Sales Account', icon: 'ri-trophy-line' },
+      { label: 'IB / Trader Account', icon: 'ri-user-star-line' },
+      { label: 'Pending Application', icon: 'ri-file-list-3-line' },
+      { label: 'Network List', icon: 'ri-git-merge-line' },
+      { label: 'Partner Offer Confirm', icon: 'ri-handshake-line' },
+      { label: 'Commission Payout', icon: 'ri-bank-card-line' },
+      { label: 'Manual Commission', icon: 'ri-hand-coin-line' },
+      { label: 'Downline Report', icon: 'ri-bar-chart-grouped-line' },
+    ]
+  },
+  mt5: {
+    title: 'MT5_MANAGEMENT',
+    sub: [
+      { label: 'MT5 Settings', icon: 'ri-settings-5-line' },
+      { label: 'Pending Application', icon: 'ri-file-list-3-line', active: true },
+    ]
+  },
+  sofinx: {
+    title: 'SOFINX_TRADE_TEAM',
+    sub: [
+      { label: 'Commission Plan', icon: 'ri-link-m' },
+      { label: 'Investor List', icon: 'ri-group-line' },
+      { label: 'Position List', icon: 'ri-list-check' },
+      { label: 'Deposit', icon: 'ri-arrow-down-circle-line' },
+      { label: 'Withdrawal', icon: 'ri-arrow-up-circle-line' },
+      { label: 'Group List', icon: 'ri-team-line' },
+      { label: 'Symbols List', icon: 'ri-funds-line' },
+      { label: 'Rebate Details', icon: 'ri-percent-line' },
+      { label: 'Payout Details', icon: 'ri-bank-card-line' },
+    ]
+  },
+  tools: {
+    title: 'EXTRA_FEATURES',
+    sub: [
+      { label: 'EXCOM Records', icon: 'ri-database-line' },
+      { label: 'MT4 Enable/Disable', icon: 'ri-toggle-line' },
+      { label: 'Create MT4 Group', icon: 'ri-add-circle-line' },
+      { label: 'Check Trade Record', icon: 'ri-search-line' },
+      { label: 'Rerun Trade Sum', icon: 'ri-restart-line' },
+      { label: 'Update PSP', icon: 'ri-user-settings-line' },
+      { label: 'Notification Setting', icon: 'ri-notification-4-line' },
+      { label: 'Bulk Transaction', icon: 'ri-loop-left-line' },
+    ]
+  },
+  content: {
+    title: 'CONTENT_MODULES',
+    sub: [
+      { label: 'Announcement', icon: 'ri-megaphone-line' },
+      { label: 'News Module', icon: 'ri-newspaper-line' },
+      { label: 'Landing Page', icon: 'ri-layout-line' },
+      { label: 'User Guide', icon: 'ri-book-open-line' },
+      { label: 'Commission Plan', icon: 'ri-coins-line' },
+      { label: 'Reporting', icon: 'ri-bar-chart-2-line' },
+      { label: 'Local Depositor', icon: 'ri-bank-line' },
+      { label: 'LPOA Application', icon: 'ri-file-shield-2-line' },
+    ]
+  },
+  settings: {
+    title: 'SETTINGS',
+    sub: [
+      { label: 'E-Wallet Upload', icon: 'ri-upload-cloud-line' },
+      { label: 'Manage PSP', icon: 'ri-bank-card-2-line' },
+      { label: 'Roles', icon: 'ri-shield-line' },
+      { label: 'Permissions', icon: 'ri-lock-line' },
+      { label: 'Users', icon: 'ri-user-settings-line' },
+      { label: 'Exchange Rate', icon: 'ri-currency-line' },
+      { label: 'Email Management', icon: 'ri-mail-settings-line' },
+      { label: 'Configuration', icon: 'ri-settings-3-line' },
+      { label: 'Admin Logs', icon: 'ri-admin-line' },
+      { label: 'Change Password', icon: 'ri-lock-password-line' },
+    ]
+  }
+};
+
+let activeTray = null;
+
+function renderSubnav(key) {
+  const m = modules[key];
+  const subnav = document.getElementById('subnav');
+  subnav.innerHTML = m.sub.map(s =>
+    `<a class="sub-link ${s.active ? 'active' : ''}" href="#">
+      <i class="${s.icon}"></i>${s.label}
+    </a>`
+  ).join('');
+}
+
+function switchModule(key, el) {
+  document.querySelectorAll('.top-mod').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  renderSubnav(key);
+  closeTray();
+}
+
+function openTray(key, el) {
+  const tray = document.getElementById('tray');
+  const backdrop = document.getElementById('tray-backdrop');
+  document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+
+  if (activeTray === key) {
+    tray.classList.remove('open');
+    backdrop.classList.remove('on');
+    activeTray = null;
+    return;
+  }
+
+  activeTray = key;
+  const m = modules[key];
+  document.getElementById('tray-title').textContent = m.title;
+  document.getElementById('tray-links').innerHTML = m.sub.map(s =>
+    `<a class="tray-link ${s.active ? 'active' : ''}" href="#">
+      <i class="${s.icon}"></i><span>${s.label}</span>
+    </a>`
+  ).join('');
+
+  tray.classList.add('open');
+  backdrop.classList.add('on');
+}
+
+function closeTray() {
+  document.getElementById('tray').classList.remove('open');
+  document.getElementById('tray-backdrop').classList.remove('on');
+  activeTray = null;
+}
+
+// init
+renderSubnav('mt5');
+</script>
+</body>
+</html>

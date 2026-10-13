@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event 1 Landing Page Replica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #08101c;
+    --surface: rgba(8, 17, 31, 0.82);
+    --panel: rgba(255, 255, 255, 0.94);
+    --panel-line: rgba(14, 24, 44, 0.14);
+    --text: #eef4ff;
+    --muted: #8ca1c0;
+    --ink: #1b2230;
+    --ink-muted: #5c6472;
+    --brand-1: #f9511a;
+    --brand-2: #012065;
+    --brand-1-soft: #ff8b65;
+    --line: rgba(148, 163, 184, 0.18);
+    --shadow: 0 28px 90px rgba(0, 0, 0, 0.32);
+    --ease-panel: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html, body { min-height: 100%; }
+
+  body {
+    margin: 0;
+    font-family: "Barlow", "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(249, 81, 26, 0.22), transparent 28%),
+      radial-gradient(circle at top right, rgba(1, 32, 101, 0.34), transparent 30%),
+      linear-gradient(180deg, #0d1730 0%, var(--bg) 48%, #050a13 100%);
+  }
+
+  .shell {
+    width: min(1360px, calc(100% - 32px));
+    margin: 24px auto 36px;
+  }
+
+  .topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .back,
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    backdrop-filter: blur(16px);
+  }
+
+  .back:hover {
+    border-color: rgba(249, 81, 26, 0.36);
+    color: #fff;
+  }
+
+  .chip {
+    color: #ffd4c7;
+    background: rgba(249, 81, 26, 0.12);
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 30px;
+    background: #101a2d;
+    box-shadow: var(--shadow);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(1, 17, 54, 0.12) 0%, rgba(1, 17, 54, 0) 34%, rgba(1, 17, 54, 0.28) 100%),
+      linear-gradient(180deg, rgba(3, 8, 20, 0.16) 0%, rgba(3, 8, 20, 0) 30%, rgba(3, 8, 20, 0.3) 100%);
+    pointer-events: none;
+  }
+
+  .hero-media {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .toggle-chip {
+    position: absolute;
+    top: 26px;
+    right: 26px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--brand-1), var(--brand-1-soft));
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 18px 34px rgba(249, 81, 26, 0.3);
+    cursor: pointer;
+    transition: transform 0.24s ease, box-shadow 0.24s ease, opacity 0.28s ease;
+  }
+
+  .toggle-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(249, 81, 26, 0.38);
+  }
+
+  .toggle-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+    animation: pulse 1.8s infinite;
+  }
+
+  .panel-wrap {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 3;
+    width: min(420px, 34vw);
+    transition:
+      transform 0.72s var(--ease-panel),
+      opacity 0.38s ease,
+      visibility 0.38s ease;
+  }
+
+  .panel-card {
+    position: relative;
+    padding: 22px 22px 24px;
+    border-radius: 28px;
+    border: 1px solid var(--panel-line);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(248, 249, 252, 0.93));
+    color: var(--ink);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 26px 70px rgba(15, 23, 42, 0.24);
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .brand-block img {
+    display: block;
+    width: 132px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 0;
+  }
+
+  .close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(1, 32, 101, 0.1);
+    border-radius: 50%;
+    background: rgba(1, 32, 101, 0.05);
+    color: var(--brand-2);
+    font: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .close-btn:hover {
+    transform: scale(1.04);
+    background: rgba(249, 81, 26, 0.1);
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .validation-banner {
+    display: none;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border: 1px solid rgba(220, 38, 38, 0.18);
+    border-radius: 16px;
+    background:
+      linear-gradient(135deg, rgba(255, 244, 244, 0.98), rgba(255, 235, 235, 0.94));
+    color: #991b1b;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .validation-banner.is-visible {
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+
+  .validation-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 10px 18px rgba(220, 38, 38, 0.2);
+  }
+
+  .validation-copy strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+  }
+
+  .validation-copy span {
+    display: block;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: rgba(127, 29, 29, 0.88);
+  }
+
+  .field {
+    display: grid;
+    gap: 0;
+  }
+
+  .field input {
+    width: 100%;
+    height: 50px;
+    padding: 0 14px;
+    border: 1px solid rgba(1, 32, 101, 0.1);
+    border-radius: 14px;
+    background: rgba(239, 243, 248, 0.92);
+    color: #0f1725;
+    font: inherit;
+    font-size: 0.98rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+
+  .field input:focus {
+    outline: 0;
+    border-color: rgba(249, 81, 26, 0.45);
+    box-shadow: 0 0 0 4px rgba(249, 81, 26, 0.12);
+    background: #fff;
+  }
+
+  .field input::placeholder {
+    color: rgba(92, 100, 114, 0.8);
+  }
+
+  .field input.is-invalid {
+    border-color: rgba(220, 38, 38, 0.72);
+    background: rgba(254, 242, 242, 0.95);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+  }
+
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 54px;
+    margin-top: 6px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--brand-1-soft), var(--brand-1));
+    color: #fff;
+    font: inherit;
+    font-size: 0.98rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 16px 28px rgba(249, 81, 26, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 32px rgba(249, 81, 26, 0.3);
+  }
+
+  .hero.panel-hidden .panel-wrap {
+    transform: translateX(calc(100% + 28px)) scale(0.97);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .hero.panel-hidden .toggle-chip {
+    animation: float-chip 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.46); }
+    70% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  }
+
+  @keyframes float-chip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @media (max-width: 1180px) {
+    .panel-wrap { width: min(420px, 38vw); }
+  }
+
+  @media (max-width: 900px) {
+    .shell { width: min(100%, calc(100% - 18px)); margin-top: 14px; }
+
+    .hero {
+      border-radius: 24px;
+    }
+
+    .hero::after {
+      background:
+        linear-gradient(180deg, rgba(3, 8, 20, 0.14) 0%, rgba(3, 8, 20, 0) 34%, rgba(3, 8, 20, 0.34) 100%);
+    }
+
+    .panel-wrap {
+      position: fixed;
+      top: 76px;
+      right: 12px;
+      left: 12px;
+      bottom: auto;
+      width: auto;
+      z-index: 30;
+      max-height: calc(100svh - 96px);
+      overflow-y: auto;
+    }
+
+    .toggle-chip {
+      top: 18px;
+      right: 18px;
+      min-height: 46px;
+      padding: 0 16px;
+    }
+
+    .hero.panel-hidden .panel-wrap {
+      transform: translateY(-24px) scale(0.98);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .topline { margin-bottom: 14px; }
+
+    .back, .chip {
+      min-height: 38px;
+      padding: 0 14px;
+      font-size: 10px;
+    }
+
+    .toggle-chip {
+      top: 14px;
+      right: 14px;
+      left: 14px;
+      justify-content: center;
+    }
+
+    .panel-wrap {
+      top: 70px;
+      max-height: calc(100svh - 84px);
+    }
+
+    .panel-card {
+      padding: 18px 16px 18px;
+      border-radius: 22px;
+    }
+
+    .brand-block img {
+      width: 118px;
+      margin-bottom: 10px;
+    }
+
+    .field input {
+      height: 46px;
+      font-size: 0.94rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="back" href="designs">Back to Designs</a>
+      <div class="chip">Replica / Event Landing Page</div>
+    </div>
+
+    <section class="hero" id="hero">
+      <button class="toggle-chip" id="togglePanel" type="button" aria-controls="formPanel" aria-expanded="true">
+        <span class="toggle-dot" aria-hidden="true"></span>
+        <span id="toggleLabel">Hide signup form</span>
+      </button>
+
+      <div class="panel-wrap" id="formPanel">
+        <div class="panel-card">
+          <div class="panel-head">
+            <div class="brand-block">
+              <img src="assets/img/login-logo.png" alt="AIMS logo">
+            </div>
+            <button class="close-btn" id="closePanel" type="button" aria-label="Hide form">&times;</button>
+          </div>
+
+          <div class="validation-banner" id="validationBanner" aria-live="polite">
+            <div class="validation-icon">!</div>
+            <div class="validation-copy">
+              <strong>Please check the highlighted fields.</strong>
+              <span id="validationText">All required fields must be completed before submission.</span>
+            </div>
+          </div>
+
+          <form id="previewForm">
+            <div class="form-grid">
+              <div class="field">
+                <input id="full-name" name="full_name" type="text" placeholder="Full Name" aria-label="Full Name">
+              </div>
+
+              <div class="field">
+                <input id="email-address" name="email_address" type="email" placeholder="Email Address" aria-label="Email Address">
+              </div>
+
+              <div class="field">
+                <input id="mt-account" name="mt4_id" type="text" placeholder="MT4 / MT5 Account" aria-label="MT4 or MT5 Account">
+              </div>
+
+              <div class="field">
+                <input id="phone-number" name="phone_number" type="text" placeholder="Phone Number" aria-label="Phone Number">
+              </div>
+            </div>
+
+            <button class="submit-btn" type="submit">报名参加</button>
+          </form>
+        </div>
+      </div>
+
+      <img
+        class="hero-media"
+        src="https://aimsfx-bucket.s3.ap-southeast-1.amazonaws.com/2d44e06a7038f2dd98f0f54c4be35e221711697530.jpg"
+        alt="AIMS event landing page background"
+      >
+    </section>
+
+  </main>
+
+  <script>
+    const hero = document.getElementById("hero");
+    const formPanel = document.getElementById("formPanel");
+    const togglePanel = document.getElementById("togglePanel");
+    const closePanel = document.getElementById("closePanel");
+    const toggleLabel = document.getElementById("toggleLabel");
+    const previewForm = document.getElementById("previewForm");
+    const validationBanner = document.getElementById("validationBanner");
+    const validationText = document.getElementById("validationText");
+    const formInputs = Array.from(previewForm.querySelectorAll("input"));
+
+    function setPanelHidden(hidden) {
+      hero.classList.toggle("panel-hidden", hidden);
+      formPanel.setAttribute("aria-hidden", String(hidden));
+      togglePanel.setAttribute("aria-expanded", String(!hidden));
+      toggleLabel.textContent = hidden ? "Open signup form" : "Hide signup form";
+    }
+
+    function showValidation(message) {
+      validationText.textContent = message;
+      validationBanner.classList.add("is-visible");
+    }
+
+    function hideValidation() {
+      validationBanner.classList.remove("is-visible");
+    }
+
+    function validateInput(input) {
+      const value = input.value.trim();
+      let valid = true;
+
+      if (!value) {
+        valid = false;
+      } else if (input.name === "email_address") {
+        valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
+      input.classList.toggle("is-invalid", !valid);
+      return valid;
+    }
+
+    togglePanel.addEventListener("click", () => {
+      setPanelHidden(!hero.classList.contains("panel-hidden"));
+    });
+
+    closePanel.addEventListener("click", () => {
+      setPanelHidden(true);
+    });
+
+    formInputs.forEach((input) => {
+      input.value = "";
+
+      input.addEventListener("input", () => {
+        if (input.classList.contains("is-invalid")) {
+          validateInput(input);
+        }
+
+        if (formInputs.every((field) => !field.classList.contains("is-invalid") && field.value.trim())) {
+          hideValidation();
+        }
+      });
+
+      input.addEventListener("blur", () => {
+        validateInput(input);
+      });
+    });
+
+    previewForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const invalidFields = formInputs.filter((input) => !validateInput(input));
+
+      if (invalidFields.length > 0) {
+        const firstInvalid = invalidFields[0];
+        const message = invalidFields.length === 1
+          ? `Please enter a valid ${firstInvalid.placeholder.toLowerCase()}.`
+          : `Please complete ${invalidFields.length} highlighted fields before submitting.`;
+
+        showValidation(message);
+        firstInvalid.focus();
+        return;
+      }
+
+      hideValidation();
+    });
+
+    window.addEventListener("load", () => {
+      window.setTimeout(() => {
+        setPanelHidden(true);
+      }, 900);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Previews</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #08101d;
+    --bg-accent: #101d33;
+    --surface: rgba(12, 21, 38, 0.82);
+    --border: rgba(148, 163, 184, 0.18);
+    --text: #e2ecff;
+    --muted: #88a0c7;
+    --blue: #60a5fa;
+    --cyan: #22d3ee;
+    --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 28%),
+      radial-gradient(circle at top right, rgba(129, 140, 248, 0.12), transparent 24%),
+      linear-gradient(180deg, var(--bg-accent), var(--bg));
+  }
+
+  .shell {
+    width: min(1080px, calc(100% - 32px));
+    margin: 48px auto;
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(18px);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(96, 165, 250, 0.12);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 18px 0 10px;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+  }
+
+  .intro {
+    max-width: 680px;
+    margin: 0 0 32px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(18, 35, 65, 0.88), rgba(8, 16, 29, 0.96));
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(96, 165, 250, 0.45);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  .card-tag {
+    display: inline-flex;
+    width: fit-content;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(34, 211, 238, 0.1);
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: -0.03em;
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card span {
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .section + .section {
+    margin-top: 40px;
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-kicker {
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: -0.03em;
+  }
+
+  .section-copy {
+    max-width: 720px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .shell {
+      margin: 20px auto;
+      padding: 24px;
+      border-radius: 22px;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <div class="eyebrow">AIMS Admin UI</div>
+    <h1>Design Previews</h1>
+    <p class="intro">
+      Quick entry point for the standalone concept pages. Each card opens in a separate tab so you can compare navigation patterns and trading platform directions side by side.
+    </p>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-kicker">Navigation</div>
+        <h2 class="section-title">Navigation Concepts</h2>
+        <p class="section-copy">
+          Alternative admin navigation patterns focused on module discovery, density, and fast switching between workflows.
+        </p>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="nav-design-preview.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Preview 1</div>
+          <h2>Split Rail</h2>
+          <p>Compact icon rail with a secondary slide-out panel for section-level navigation.</p>
+          <span>Open nav-design-preview.html</span>
+        </a>
+
+        <a class="card" href="nav-design-preview-v2.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Preview 2</div>
+          <h2>Glass Panel</h2>
+          <p>Floating rail layout paired with a centered glass submenu panel for faster focus switching.</p>
+          <span>Open nav-design-preview-v2.html</span>
+        </a>
+
+        <a class="card" href="nav-design-preview-v3.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Preview 3</div>
+          <h2>Top Modules</h2>
+          <p>Horizontal module tabs with a secondary subnav strip for dense admin workflows.</p>
+          <span>Open nav-design-preview-v3.html</span>
+        </a>
+
+        <a class="card" href="nav-design-preview-v4.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Preview 4</div>
+          <h2>Mega Menu</h2>
+          <p>Top-level module tabs that expand into a larger multi-column navigation surface.</p>
+          <span>Open nav-design-preview-v4.html</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-kicker">Trading Platform</div>
+        <h2 class="section-title">Trading UI Concepts</h2>
+        <p class="section-copy">
+          Six directions for a trading platform, ranging from dense terminal-style workspaces to cleaner portfolio and macro-driven dashboards.
+        </p>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="trading-design-command-deck.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 1</div>
+          <h2>Command Deck</h2>
+          <p>Dense pro-trader terminal with watchlists, charts, order entry, and blotter views in one command surface.</p>
+          <span>Open trading-design-command-deck.html</span>
+        </a>
+
+        <a class="card" href="trading-design-glass-market.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 2</div>
+          <h2>Glass Market</h2>
+          <p>Premium glassmorphism layout with luminous metrics, floating modules, and a more branded retail-trader feel.</p>
+          <span>Open trading-design-glass-market.html</span>
+        </a>
+
+        <a class="card" href="trading-design-split-focus.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 3</div>
+          <h2>Split Focus</h2>
+          <p>Chart-first workspace with large central analysis space and collapsible side tools for lower cognitive load.</p>
+          <span>Open trading-design-split-focus.html</span>
+        </a>
+
+        <a class="card" href="trading-design-risk-radar.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 4</div>
+          <h2>Risk Radar</h2>
+          <p>Exposure-led dashboard built around portfolio concentration, margin, drawdown, and cross-asset risk signals.</p>
+          <span>Open trading-design-risk-radar.html</span>
+        </a>
+
+        <a class="card" href="trading-design-tape-room.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 5</div>
+          <h2>Tape Room</h2>
+          <p>Old-school execution desk aesthetic with fast numbers, dense market tape, and minimal decoration.</p>
+          <span>Open trading-design-tape-room.html</span>
+        </a>
+
+        <a class="card" href="trading-design-atlas.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 6</div>
+          <h2>Atlas</h2>
+          <p>Modular multi-asset dashboard combining scanners, macro context, portfolio cards, and a global market overview.</p>
+          <span>Open trading-design-atlas.html</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="section-kicker">AIMS Client UI</div>
+        <h2 class="section-title">Deposit / PSP Cards</h2>
+        <p class="section-copy">
+          Standalone replicas for redesigning the deposit method selection area. These concepts focus on turning the current PSP tiles into stronger client-facing cards without touching the live deposit Blade page yet.
+        </p>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="deposit-design-signal-deck.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 1</div>
+          <h2>Signal Deck</h2>
+          <p>Dark trading-style selection deck with stronger hierarchy, trust signals, and a sharper CTA treatment for PSP methods.</p>
+          <span>Open deposit-design-signal-deck.html</span>
+        </a>
+
+        <a class="card" href="deposit-design-liquid-glass.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 2</div>
+          <h2>Liquid Glass</h2>
+          <p>More premium and retail-facing, using floating translucent cards, softer gradients, and clearer featured rails.</p>
+          <span>Open deposit-design-liquid-glass.html</span>
+        </a>
+
+        <a class="card" href="deposit-design-trust-ledger.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Concept 3</div>
+          <h2>Trust Ledger</h2>
+          <p>Cleaner fintech direction with editorial spacing, structured trust cues, and a lighter dashboard tone for deposit entry.</p>
+          <span>Open deposit-design-trust-ledger.html</span>
+        </a>
+
+        <a class="card" href="client2-login-video.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Replica</div>
+          <h2>Client Login Video</h2>
+          <p>Standalone login page replica based on the client2 auth screen, rebuilt as static HTML with the copied video as a full-screen background.</p>
+          <span>Open client2-login-video.html</span>
+        </a>
+
+        <a class="card" href="landing-page-event-1-replica-v2.html" target="_blank" rel="noopener noreferrer">
+          <div class="card-tag">Replica</div>
+          <h2>Event 1 Landing Form</h2>
+          <p>Standalone recreation of the public event landing page with the signup form auto-hiding on load and returning through an animated floating toggle.</p>
+          <span>Open landing-page-event-1-replica-v2.html</span>
+        </a>
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>

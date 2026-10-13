@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquid Glass - Deposit Design Concept</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #090c19;
+    --text: #f6f7ff;
+    --muted: #aab1d3;
+    --line: rgba(255, 255, 255, 0.12);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at 16% 18%, rgba(125, 211, 252, 0.28), transparent 22%),
+      radial-gradient(circle at 84% 12%, rgba(167, 139, 250, 0.28), transparent 24%),
+      radial-gradient(circle at 72% 82%, rgba(94, 234, 212, 0.2), transparent 30%),
+      linear-gradient(180deg, #12162d, var(--bg));
+  }
+
+  .shell {
+    width: min(1220px, calc(100% - 32px));
+    margin: 24px auto;
+    padding: 24px;
+  }
+
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .back, .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    margin: 0 0 10px;
+    font-size: clamp(2.7rem, 5vw, 4.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+  }
+
+  .hero p {
+    max-width: 760px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .glass-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 18px;
+  }
+
+  .glass,
+  .stack-card {
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.28);
+  }
+
+  .featured {
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .featured-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .featured-header small,
+  .stack-card small {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .featured-header h2 {
+    margin: 0 0 8px;
+    font-size: 34px;
+    letter-spacing: -0.05em;
+  }
+
+  .featured-header p,
+  .stack-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .featured-rail {
+    display: inline-flex;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(94, 234, 212, 0.24);
+    background: rgba(94, 234, 212, 0.12);
+    color: #a8fff1;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .featured-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .method {
+    min-height: 220px;
+    padding: 18px;
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at top right, rgba(var(--card-rgb), 0.22), transparent 26%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .method-head,
+  .method-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .method-head span,
+  .pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--card-rgb), 0.28);
+    background: rgba(var(--card-rgb), 0.14);
+  }
+
+  .method img {
+    width: auto;
+    max-width: 96px;
+    height: 48px;
+    object-fit: contain;
+    margin: 18px 0 14px;
+  }
+
+  .method h3 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+  }
+
+  .method p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 14px;
+  }
+
+  .method-foot {
+    margin-top: auto;
+    padding-top: 16px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .stack {
+    display: grid;
+    gap: 18px;
+  }
+
+  .stack-card {
+    padding: 18px;
+  }
+
+  .stack-card h3 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+  }
+
+  .stack-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .stack-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .stack-item img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  .stack-item strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .stack-item span {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  @media (max-width: 1024px) {
+    .glass-grid,
+    .featured-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="back" href="designs">Back to designs</a>
+      <span class="chip">Deposit Concept 2</span>
+    </div>
+
+    <section class="hero">
+      <h1>Liquid Glass</h1>
+      <p>
+        A more premium, retail-facing deposit selector. The intent here is to make the PSP stage feel modern and polished, with floating feature cards instead of a flat dashboard utility grid.
+      </p>
+    </section>
+
+    <section class="glass-grid">
+      <div class="glass featured">
+        <div class="featured-header">
+          <div>
+            <small>Featured rails</small>
+            <h2>Deposit cards with more presence</h2>
+            <p>Featured methods feel curated, not just dumped into a generic 4-column grid. That makes the whole funding experience feel more deliberate.</p>
+          </div>
+          <span class="featured-rail">Premium lane</span>
+        </div>
+
+        <div class="featured-cards">
+          <article class="method" style="--card-rgb: 94, 234, 212;">
+            <div class="method-head"><span>Bank Transfer</span><span class="pill">Recommended</span></div>
+            <img src="img/payment-gateway/bank-transfer.png" alt="Bank Transfer">
+            <h3>Local Transfer</h3>
+            <p>The anchor option gets a more generous card size, clearer copy, and a stronger “safe default” visual treatment.</p>
+            <div class="method-foot"><span>Manual matching</span><span>Open flow</span></div>
+          </article>
+
+          <article class="method" style="--card-rgb: 125, 211, 252;">
+            <div class="method-head"><span>Gateway</span><span class="pill">Trusted</span></div>
+            <img src="img/payment-gateway/gfpay.png" alt="GF Pay">
+            <h3>GF Pay</h3>
+            <p>A gateway card that feels premium enough for repeat deposits instead of looking like a technical admin entry.</p>
+            <div class="method-foot"><span>Regional PSP</span><span>Select route</span></div>
+          </article>
+
+          <article class="method" style="--card-rgb: 249, 115, 22;">
+            <div class="method-head"><span>Crypto Rail</span><span class="pill">USDT</span></div>
+            <img src="img/payment-gateway/usdt.png" alt="USDT">
+            <h3>USDT Deposit</h3>
+            <p>Crypto methods become much easier to recognize when they have a dedicated visual lane instead of blending into everything else.</p>
+            <div class="method-foot"><span>Stablecoin</span><span>Continue</span></div>
+          </article>
+
+          <article class="method" style="--card-rgb: 167, 139, 250;">
+            <div class="method-head"><span>Gateway</span><span class="pill">Fast</span></div>
+            <img src="img/payment-gateway/fasapay.png" alt="FasaPay">
+            <h3>FasaPay</h3>
+            <p>Even smaller PSP brands feel more important when the framing and hierarchy are more intentional.</p>
+            <div class="method-foot"><span>Wallet rail</span><span>Launch</span></div>
+          </article>
+        </div>
+      </div>
+
+      <aside class="stack">
+        <div class="stack-card">
+          <small>Design principle</small>
+          <h3>Featured first, alternatives second</h3>
+          <p>The current page treats every option equally. This version lets you visually prioritize bank transfer, crypto, or flagship PSP rails without hard-coding recommendation badges everywhere.</p>
+        </div>
+
+        <div class="stack-card">
+          <small>Compact alternatives</small>
+          <div class="stack-list">
+            <div class="stack-item">
+              <img src="img/payment-gateway/skrill.png" alt="Skrill">
+              <div><strong>Skrill</strong><span>Global wallet alternative</span></div>
+            </div>
+            <div class="stack-item">
+              <img src="img/payment-gateway/billplz.png" alt="Billplz">
+              <div><strong>Billplz</strong><span>Clean online banking card</span></div>
+            </div>
+            <div class="stack-item">
+              <img src="img/payment-gateway/mcpayment.png" alt="MCPayment">
+              <div><strong>MCPayment</strong><span>Can sit in the secondary rail list cleanly</span></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>

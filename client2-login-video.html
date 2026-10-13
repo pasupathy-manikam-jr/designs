@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIMS Client Login Video</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --line: rgba(255, 255, 255, 0.12);
+    --text: #f5f8ff;
+    --muted: rgba(226, 235, 255, 0.72);
+    --red: #e44b5f;
+    --red-dark: #b62d44;
+    --field: rgba(255, 255, 255, 0.08);
+    --field-focus: rgba(96, 165, 250, 0.26);
+    --shadow: 0 32px 100px rgba(0, 0, 0, 0.45);
+  }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background: #000;
+  }
+
+  .page {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.2s linear;
+  }
+
+  .bg-video.is-visible {
+    opacity: 1;
+  }
+
+  .video-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(3, 8, 18, 0.16), rgba(4, 10, 22, 0.04) 36%, rgba(3, 8, 18, 0.34)),
+      radial-gradient(circle at center, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.18));
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .back-link,
+  .sound-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    text-decoration: none;
+    width: fit-content;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sound-toggle {
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .sound-toggle[data-state="on"] {
+    background: rgba(228, 75, 95, 0.16);
+    border-color: rgba(228, 75, 95, 0.32);
+  }
+
+  .card-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(520px, 100%);
+  }
+
+  .login-card {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background:
+      linear-gradient(180deg, rgba(5, 11, 21, 0.14), rgba(5, 11, 21, 0.24));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-top {
+    padding: 24px 24px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-mark {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-mark img {
+    width: 34px;
+    height: auto;
+  }
+
+  .logo-meta small {
+    display: block;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .logo-meta strong {
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .status-pill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .form-wrap {
+    padding: 18px 24px 24px;
+  }
+
+  .form-head h2 {
+    margin: 0 0 8px;
+    font-size: 34px;
+    letter-spacing: -0.05em;
+  }
+
+  .form-head p {
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .field input {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    outline: none;
+    font-size: 15px;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .field input:focus {
+    border-color: var(--field-focus);
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .helper-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 6px 0 18px;
+  }
+
+  .checkline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 14px;
+  }
+
+  .checkline input {
+    accent-color: var(--red);
+  }
+
+  .helper-row a,
+  .signup a {
+    color: #ff6b81;
+    text-decoration: none;
+  }
+
+  .action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .login-btn {
+    border: 0;
+    height: 48px;
+    min-width: 150px;
+    padding: 0 24px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 14px 30px rgba(228, 75, 95, 0.32);
+  }
+
+  .signup {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .language-panel {
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .language-panel strong {
+    display: block;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .lang-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .flag-chip {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .flag-chip img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  @media (max-width: 1024px) {
+    .content {
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .brand-copy h1 {
+      font-size: 2.6rem;
+    }
+
+    .card-top,
+    .form-wrap {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .helper-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .action-row {
+      justify-content: stretch;
+    }
+
+    .login-btn {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <video id="loginBackgroundVideoA" class="bg-video is-visible" autoplay muted playsinline preload="auto">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    <video id="loginBackgroundVideoB" class="bg-video" muted playsinline preload="auto">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="content">
+      <section class="card-shell">
+        <div class="login-card">
+          <div class="card-top">
+            <div class="logo-wrap">
+              <div class="logo-mark">
+                <img src="assets/img/login-logo-w.png" alt="AIMS">
+              </div>
+              <div class="logo-meta">
+                <small>AIMS Client Portal</small>
+                <strong>Secure Login</strong>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button id="soundToggle" class="sound-toggle" type="button" data-state="off">Enable Sound</button>
+              <a class="back-link" href="designs">Back to designs</a>
+            </div>
+          </div>
+
+          <div class="form-wrap">
+            <div class="form-head">
+              <h2>Welcome Back!</h2>
+              <p>Login to manage your account</p>
+            </div>
+
+            <form action="#" method="post">
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" placeholder="name@example.com">
+              </div>
+
+              <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" placeholder="Enter your password">
+              </div>
+
+              <div class="helper-row">
+                <label class="checkline" for="remember">
+                  <input id="remember" type="checkbox" checked>
+                  <span>Remember Me</span>
+                </label>
+                <a href="#">Forgot Your Password?</a>
+              </div>
+
+              <div class="action-row">
+                <button class="login-btn" type="submit">Log In</button>
+              </div>
+            </form>
+
+            <p class="signup">
+              Don't have an account?
+              <a href="#"><strong>Sign Up Now</strong></a>
+            </p>
+
+            <div class="language-panel">
+              <strong>Click to Select Language</strong>
+              <div class="lang-row">
+                <a class="flag-chip" href="#" title="English"><img src="assets/images/flags/gb.svg" alt="English"></a>
+                <a class="flag-chip" href="#" title="Chinese"><img src="assets/images/flags/china.svg" alt="Chinese"></a>
+                <a class="flag-chip" href="#" title="Japanese"><img src="assets/images/flags/jp.svg" alt="Japanese"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script>
+    const backgroundVideos = [
+      document.getElementById('loginBackgroundVideoA'),
+      document.getElementById('loginBackgroundVideoB'),
+    ];
+    const soundToggle = document.getElementById('soundToggle');
+    const crossfadeDurationMs = 1200;
+    const crossfadeWindowSeconds = 1.15;
+    let activeVideoIndex = 0;
+    let isTransitioning = false;
+    let soundEnabled = false;
+    let monitorFrame = null;
+    let volumeFrame = null;
+
+    const getActiveVideo = () => backgroundVideos[activeVideoIndex];
+    const getIncomingVideo = () => backgroundVideos[(activeVideoIndex + 1) % backgroundVideos.length];
+
+    const updateSoundToggle = () => {
+      soundToggle.dataset.state = soundEnabled ? 'on' : 'off';
+      soundToggle.textContent = soundEnabled ? 'Sound On' : 'Enable Sound';
+    };
+
+    const applySoundState = () => {
+      backgroundVideos.forEach((video, index) => {
+        if (!soundEnabled) {
+          video.muted = true;
+          video.volume = 0;
+          return;
+        }
+
+        if (index === activeVideoIndex && !isTransitioning) {
+          video.muted = false;
+          video.volume = 1;
+          return;
+        }
+
+        video.muted = true;
+        video.volume = 0;
+      });
+
+      updateSoundToggle();
+    };
+
+    const monitorLoop = () => {
+      const activeVideo = getActiveVideo();
+
+      if (
+        !isTransitioning &&
+        Number.isFinite(activeVideo.duration) &&
+        activeVideo.duration > 0 &&
+        activeVideo.currentTime >= activeVideo.duration - crossfadeWindowSeconds
+      ) {
+        startCrossfade();
+      }
+
+      monitorFrame = window.requestAnimationFrame(monitorLoop);
+    };
+
+    const finishCrossfade = (outgoingVideo, incomingVideo) => {
+      outgoingVideo.pause();
+      outgoingVideo.currentTime = 0;
+      outgoingVideo.muted = true;
+      outgoingVideo.volume = 0;
+      activeVideoIndex = (activeVideoIndex + 1) % backgroundVideos.length;
+      isTransitioning = false;
+      applySoundState();
+    };
+
+    const animateCrossfadeAudio = (outgoingVideo, incomingVideo) => {
+      if (!soundEnabled) {
+        window.setTimeout(() => {
+          finishCrossfade(outgoingVideo, incomingVideo);
+        }, crossfadeDurationMs);
+        return;
+      }
+
+      const startedAt = performance.now();
+
+      const step = (now) => {
+        const progress = Math.min((now - startedAt) / crossfadeDurationMs, 1);
+        outgoingVideo.muted = false;
+        incomingVideo.muted = false;
+        outgoingVideo.volume = 1 - progress;
+        incomingVideo.volume = progress;
+
+        if (progress < 1) {
+          volumeFrame = window.requestAnimationFrame(step);
+          return;
+        }
+
+        finishCrossfade(outgoingVideo, incomingVideo);
+      };
+
+      volumeFrame = window.requestAnimationFrame(step);
+    };
+
+    const startCrossfade = async () => {
+      if (isTransitioning) {
+        return;
+      }
+
+      const outgoingVideo = getActiveVideo();
+      const incomingVideo = getIncomingVideo();
+      isTransitioning = true;
+      incomingVideo.currentTime = 0;
+      incomingVideo.volume = 0;
+      incomingVideo.muted = true;
+      incomingVideo.classList.add('is-visible');
+      outgoingVideo.classList.remove('is-visible');
+
+      try {
+        await incomingVideo.play();
+      } catch (error) {
+        outgoingVideo.classList.add('is-visible');
+        incomingVideo.classList.remove('is-visible');
+        isTransitioning = false;
+        applySoundState();
+        return;
+      }
+
+      animateCrossfadeAudio(outgoingVideo, incomingVideo);
+    };
+
+    const waitForVideoMetadata = (video) => {
+      if (video.readyState >= 1) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        video.addEventListener('loadedmetadata', () => {
+          resolve();
+        }, { once: true });
+      });
+    };
+
+    window.addEventListener('load', async () => {
+      await Promise.all(backgroundVideos.map(waitForVideoMetadata));
+      applySoundState();
+      await getActiveVideo().play().catch(() => {});
+      monitorLoop();
+    });
+
+    soundToggle.addEventListener('click', async () => {
+      soundEnabled = !soundEnabled;
+      applySoundState();
+
+      try {
+        await getActiveVideo().play();
+      } catch (error) {
+        soundEnabled = false;
+        applySoundState();
+      }
+    });
+
+    backgroundVideos.forEach((video) => {
+      video.addEventListener('ended', () => {
+        if (video === getActiveVideo() && !isTransitioning) {
+          startCrossfade();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

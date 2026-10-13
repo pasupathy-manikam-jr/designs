@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Ledger - Deposit Design Concept</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #f2f6fb;
+    --surface: rgba(255, 255, 255, 0.88);
+    --border: rgba(17, 33, 54, 0.12);
+    --text: #132235;
+    --muted: #6b7d95;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(79, 124, 255, 0.08), transparent 24%),
+      radial-gradient(circle at bottom right, rgba(18, 179, 167, 0.08), transparent 24%),
+      linear-gradient(180deg, #fbfdff, var(--bg));
+  }
+
+  .shell {
+    width: min(1260px, calc(100% - 32px));
+    margin: 24px auto;
+    padding: 24px;
+  }
+
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .back, .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.76);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    margin: 0 0 10px;
+    font-size: clamp(2.7rem, 5vw, 4.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+  }
+
+  .hero p {
+    max-width: 760px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 0.88fr 1.12fr;
+    gap: 18px;
+  }
+
+  .panel,
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background: var(--surface);
+    box-shadow: 0 24px 70px rgba(17, 33, 54, 0.08);
+  }
+
+  .panel {
+    padding: 22px;
+  }
+
+  .panel small,
+  .card small {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .panel h2 {
+    margin: 0 0 10px;
+    font-size: 30px;
+    letter-spacing: -0.05em;
+  }
+
+  .panel p,
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .panel-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .panel-item {
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(79, 124, 255, 0.05);
+    border: 1px solid rgba(79, 124, 255, 0.08);
+  }
+
+  .panel-item strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .panel-item span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .card {
+    min-height: 240px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(circle at top right, rgba(var(--card-rgb), 0.12), transparent 28%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.88));
+  }
+
+  .card-head,
+  .card-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .card-head span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .state {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(var(--card-rgb), 0.14);
+    border: 1px solid rgba(var(--card-rgb), 0.18);
+    color: rgb(var(--card-rgb));
+  }
+
+  .card img {
+    width: auto;
+    max-width: 96px;
+    height: 48px;
+    object-fit: contain;
+    margin: 20px 0 14px;
+  }
+
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 25px;
+    letter-spacing: -0.04em;
+  }
+
+  .card-foot {
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .card-foot strong {
+    font-size: 13px;
+  }
+
+  .card-foot span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 1024px) {
+    .layout,
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="back" href="designs">Back to designs</a>
+      <span class="chip">Deposit Concept 3</span>
+    </div>
+
+    <section class="hero">
+      <h1>Trust Ledger</h1>
+      <p>
+        A lighter fintech direction for the deposit selector. This one is less dramatic than the dark concepts, but much more refined than the current PSP boxes and easier to blend into a cleaner client area.
+      </p>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <small>Editorial sidebar</small>
+        <h2>Cleaner, safer, more understandable</h2>
+        <p>This direction moves away from “many similar tiles” and toward a clearer ledger-like presentation, which works well when the product wants to project stability and trust.</p>
+        <div class="panel-list">
+          <div class="panel-item"><strong>Stronger trust framing</strong><span>Each PSP card can carry status, compliance, and rail information without feeling cramped.</span></div>
+          <div class="panel-item"><strong>Better for multilingual copy</strong><span>The layout gives titles and subtitles more breathing room than the current short card boxes.</span></div>
+          <div class="panel-item"><strong>Easy to productionize</strong><span>This is still a simple card grid, so the real Blade refactor would stay manageable when you move from concept to implementation.</span></div>
+        </div>
+      </aside>
+
+      <div class="cards">
+        <article class="card" style="--card-rgb: 79, 124, 255;">
+          <div class="card-head"><span>Bank route</span><span class="state">Primary</span></div>
+          <img src="img/payment-gateway/bank-transfer.png" alt="Bank Transfer">
+          <h3>Local Transfer</h3>
+          <p>Promoted as the trusted default instead of just another square box in the same visual weight as every PSP.</p>
+          <div class="card-foot"><strong>Bank transfer</strong><span>Guided entry flow</span></div>
+        </article>
+
+        <article class="card" style="--card-rgb: 18, 179, 167;">
+          <div class="card-head"><span>Gateway</span><span class="state">Live</span></div>
+          <img src="img/payment-gateway/gfpay.png" alt="GF Pay">
+          <h3>GF Pay</h3>
+          <p>A softer card treatment that still feels premium, suitable for users who prefer a cleaner dashboard aesthetic.</p>
+          <div class="card-foot"><strong>Fast funding</strong><span>Reusable for other PSPs</span></div>
+        </article>
+
+        <article class="card" style="--card-rgb: 243, 184, 79;">
+          <div class="card-head"><span>Crypto route</span><span class="state">USDT</span></div>
+          <img src="img/payment-gateway/usdt.png" alt="USDT">
+          <h3>USDT Deposit</h3>
+          <p>Crypto rails read more clearly when they get their own card tone and supporting text instead of just a logo and one line.</p>
+          <div class="card-foot"><strong>Stablecoin</strong><span>Chain-aware language</span></div>
+        </article>
+
+        <article class="card" style="--card-rgb: 99, 102, 241;">
+          <div class="card-head"><span>Wallet</span><span class="state">Secure</span></div>
+          <img src="img/payment-gateway/skrill.png" alt="Skrill">
+          <h3>Skrill</h3>
+          <p>Designed to feel stable and operationally trustworthy rather than flashy, which may fit the client area better.</p>
+          <div class="card-foot"><strong>Protected route</strong><span>Calm fintech tone</span></div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

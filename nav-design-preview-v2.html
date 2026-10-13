@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nav Design v2 — AIMS Admin</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080c14;
+    --surface:  #0d1524;
+    --rail-bg:  #090e1a;
+    --accent:   #3b82f6;
+    --glow:     rgba(59,130,246,0.35);
+    --violet:   #7c3aed;
+    --cyan:     #06b6d4;
+    --border:   rgba(255,255,255,0.06);
+    --text-1:   #e2eeff;
+    --text-2:   #6888b0;
+    --text-3:   #2d4a70;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-1);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── DOT GRID BACKGROUND ──────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(59,130,246,0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── FLOATING RAIL ────────────────────────────────── */
+  .rail {
+    position: relative;
+    z-index: 40;
+    width: 60px;
+    margin: 12px 0 12px 12px;
+    background: var(--rail-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0 10px;
+    gap: 2px;
+    flex-shrink: 0;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .rail-logo {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--violet));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-weight: 900;
+    font-size: 12px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    box-shadow: 0 0 20px var(--glow);
+    flex-shrink: 0;
+  }
+
+  .rail-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-3);
+    transition: all 0.2s;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .rail-item:hover {
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+  }
+
+  .rail-item.active {
+    background: rgba(59,130,246,0.15);
+    color: var(--accent);
+    box-shadow: 0 0 16px rgba(59,130,246,0.25), inset 0 0 0 1px rgba(59,130,246,0.3);
+  }
+
+  .rail-item i { font-size: 18px; }
+
+  .rail-divider {
+    width: 24px;
+    height: 1px;
+    background: var(--border);
+    margin: 5px 0;
+    flex-shrink: 0;
+  }
+
+  .rail-bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+    padding: 0;
+  }
+
+  /* ── GLASS POPUP PANEL ────────────────────────────── */
+  .glass-panel {
+    position: fixed;
+    top: 50%;
+    left: 80px;
+    transform: translateY(-50%) scale(0.95);
+    width: 260px;
+    max-height: 70vh;
+    background: rgba(13, 21, 36, 0.85);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 20px 60px rgba(0,0,0,0.7),
+      0 0 40px rgba(59,130,246,0.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s cubic-bezier(.34,1.4,.64,1);
+  }
+
+  .glass-panel.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .gp-header {
+    padding: 18px 18px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  .gp-module-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+
+  .gp-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-1);
+  }
+
+  .gp-search {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 7px 12px;
+    gap: 8px;
+    transition: border-color 0.15s;
+  }
+  .gp-search:focus-within { border-color: rgba(59,130,246,0.4); }
+  .gp-search i { color: var(--text-3); font-size: 13px; }
+  .gp-search input {
+    border: none; background: transparent;
+    font-size: 12px; color: var(--text-2);
+    outline: none; width: 100%;
+  }
+  .gp-search input::placeholder { color: var(--text-3); }
+
+  .gp-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 10px 12px;
+  }
+  .gp-body::-webkit-scrollbar { width: 4px; }
+  .gp-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 4px; }
+
+  .gp-section-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 10px 8px 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .gp-link {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.12s, color 0.12s;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .gp-link:hover { background: rgba(255,255,255,0.05); color: var(--text-1); }
+  .gp-link.active {
+    background: rgba(59,130,246,0.12);
+    color: #93c5fd;
+    font-weight: 600;
+  }
+  .gp-link .arrow {
+    margin-left: auto;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.1s;
+    color: var(--accent);
+  }
+  .gp-link:hover .arrow, .gp-link.active .arrow { opacity: 1; }
+  .gp-link .icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .gp-link.active .icon { background: rgba(59,130,246,0.2); color: var(--accent); }
+
+  /* ── MAIN ─────────────────────────────────────────── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    padding: 12px 12px 12px 8px;
+    gap: 0;
+  }
+
+  /* ── TOPBAR ───────────────────────────────────────── */
+  .topbar {
+    height: 52px;
+    background: rgba(13,21,36,0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 12px;
+    flex-shrink: 0;
+    margin-bottom: 12px;
+  }
+
+  .topbar-crumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .topbar-crumb .sep { color: var(--text-3); opacity: 0.4; }
+  .topbar-crumb .current {
+    color: var(--text-1);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+  .tb-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .tb-pill:hover { background: rgba(59,130,246,0.15); }
+  .tb-pill i { font-size: 13px; }
+
+  .tb-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-2); font-size: 15px;
+    transition: all 0.15s;
+  }
+  .tb-icon:hover { background: rgba(255,255,255,0.08); color: var(--text-1); }
+
+  .avatar {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent), var(--violet));
+    color: #fff; font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(59,130,246,0.3);
+  }
+
+  /* ── CONTENT ──────────────────────────────────────── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .content::-webkit-scrollbar { width: 5px; }
+  .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 4px; }
+
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-1);
+    letter-spacing: -0.5px;
+  }
+
+  .page-sub {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .create-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    background: linear-gradient(135deg, var(--accent), #1d4ed8);
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+    transition: box-shadow 0.2s, transform 0.1s;
+  }
+  .create-btn:hover { box-shadow: 0 6px 24px rgba(59,130,246,0.5); transform: translateY(-1px); }
+
+  /* ── STAT CARDS ───────────────────────────────────── */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  .card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .card:hover { border-color: rgba(59,130,246,0.25); transform: translateY(-2px); }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-accent, rgba(59,130,246,0.5)), transparent);
+  }
+
+  .card.c-blue  { --card-accent: rgba(59,130,246,0.6); }
+  .card.c-green { --card-accent: rgba(34,197,94,0.6); }
+  .card.c-amber { --card-accent: rgba(245,158,11,0.6); }
+  .card.c-rose  { --card-accent: rgba(244,63,94,0.6); }
+
+  .card-glow {
+    position: absolute;
+    top: -30px; right: -20px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    opacity: 0.06;
+    filter: blur(20px);
+  }
+  .c-blue  .card-glow { background: #3b82f6; }
+  .c-green .card-glow { background: #22c55e; }
+  .c-amber .card-glow { background: #f59e0b; }
+  .c-rose  .card-glow { background: #f43f5e; }
+
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+  .card-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .c-blue  .card-icon { background: rgba(59,130,246,0.15);  color: #60a5fa; }
+  .c-green .card-icon { background: rgba(34,197,94,0.15);   color: #4ade80; }
+  .c-amber .card-icon { background: rgba(245,158,11,0.15);  color: #fbbf24; }
+  .c-rose  .card-icon { background: rgba(244,63,94,0.15);   color: #fb7185; }
+
+  .card-change {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 20px;
+    font-family: 'Courier New', monospace;
+  }
+  .up   { background: rgba(34,197,94,0.12);  color: #4ade80; }
+  .down { background: rgba(244,63,94,0.12);  color: #fb7185; }
+
+  .card-value { font-size: 28px; font-weight: 800; color: var(--text-1); line-height: 1; }
+  .card-label { font-size: 11px; color: var(--text-3); margin-top: 5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── TABLE ────────────────────────────────────────── */
+  .table-wrap {
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .table-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .table-head-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-1);
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .table-filter {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+  .table-filter i { color: var(--text-3); font-size: 13px; }
+  .table-filter input { background: none; border: none; outline: none; font-size: 12px; color: var(--text-2); width: 140px; }
+  .table-filter input::placeholder { color: var(--text-3); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  th {
+    padding: 10px 18px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: rgba(0,0,0,0.2);
+    font-family: 'Courier New', monospace;
+  }
+
+  td {
+    padding: 13px 18px;
+    color: var(--text-2);
+    border-top: 1px solid rgba(255,255,255,0.03);
+    vertical-align: middle;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td strong { color: var(--text-1); font-weight: 600; }
+  td small { color: var(--text-3); font-size: 11px; }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.3px;
+  }
+  .s-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .st-pend  { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+  .st-pend .s-dot  { background: #f59e0b; box-shadow: 0 0 4px #f59e0b; animation: pulse 2s infinite; }
+  .st-appr  { background: rgba(34,197,94,0.1);  color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+  .st-appr .s-dot  { background: #22c55e; }
+  .st-rjct  { background: rgba(244,63,94,0.1);  color: #fb7185; border: 1px solid rgba(244,63,94,0.2); }
+  .st-rjct .s-dot  { background: #f43f5e; }
+
+  .action-btn {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text-3); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { background: rgba(59,130,246,0.15); color: var(--accent); border-color: rgba(59,130,246,0.3); }
+
+  /* ── CORNER LABEL ─────────────────────────────────── */
+  .label {
+    position: fixed; bottom: 14px; right: 14px;
+    font-size: 10px;
+    font-family: 'Courier New', monospace;
+    color: var(--text-3);
+    background: rgba(13,21,36,0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .label span { color: var(--accent); }
+
+  /* ── BACKDROP ─────────────────────────────────────── */
+  .backdrop {
+    position: fixed; inset: 0;
+    z-index: 35;
+    display: none;
+  }
+  .backdrop.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- FLOATING RAIL -->
+<nav class="rail">
+  <div class="rail-logo">AI</div>
+
+  <div class="rail-item active" onclick="openPanel('dashboard', this)">
+    <i class="ri-dashboard-2-fill"></i>
+  </div>
+
+  <div class="rail-divider"></div>
+
+  <div class="rail-item" onclick="openPanel('user', this)">
+    <i class="ri-shield-user-line"></i>
+  </div>
+  <div class="rail-item" onclick="openPanel('client', this)">
+    <i class="ri-group-line"></i>
+  </div>
+  <div class="rail-item" onclick="openPanel('ib', this)">
+    <i class="ri-user-star-line"></i>
+  </div>
+  <div class="rail-item" onclick="openPanel('aplan', this)">
+    <i class="ri-coins-line"></i>
+  </div>
+  <div class="rail-item" onclick="openPanel('mt5', this)">
+    <i class="ri-bar-chart-box-line"></i>
+  </div>
+  <div class="rail-item" onclick="openPanel('sofinx', this)">
+    <i class="ri-funds-line"></i>
+  </div>
+
+  <div class="rail-divider"></div>
+
+  <div class="rail-item" onclick="openPanel('tools', this)">
+    <i class="ri-tools-line"></i>
+  </div>
+  <div class="rail-item" onclick="openPanel('content', this)">
+    <i class="ri-article-line"></i>
+  </div>
+
+  <div class="rail-bottom">
+    <div class="rail-divider"></div>
+    <div class="rail-item" onclick="openPanel('settings', this)">
+      <i class="ri-settings-5-line"></i>
+    </div>
+    <div class="rail-item">
+      <i class="ri-logout-box-r-line"></i>
+    </div>
+  </div>
+</nav>
+
+<!-- GLASS POPUP PANEL -->
+<div class="backdrop" id="backdrop" onclick="closePanel()"></div>
+<div class="glass-panel" id="glass-panel">
+  <div class="gp-header">
+    <div class="gp-module-tag"><i class="ri-stack-line"></i> <span id="gp-tag">Module</span></div>
+    <div class="gp-title" id="gp-title">Dashboard</div>
+    <div class="gp-search">
+      <i class="ri-search-line"></i>
+      <input type="text" placeholder="Search pages..." id="gp-search" oninput="filterLinks(this.value)">
+    </div>
+  </div>
+  <div class="gp-body" id="gp-body"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-crumb">
+      <span>MT5 Management</span>
+      <span class="sep">/</span>
+      <span class="current">Pending Application</span>
+    </div>
+    <div class="topbar-right">
+      <button class="create-btn"><i class="ri-add-line"></i> Create MT5 Account</button>
+      <div class="tb-icon"><i class="ri-notification-3-line"></i></div>
+      <div class="tb-icon"><i class="ri-search-line"></i></div>
+      <div class="avatar">AD</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pending Application</div>
+        <div class="page-sub">// MT5_MANAGEMENT.PENDING_APPLICATION</div>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="cards">
+      <div class="card c-blue">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon"><i class="ri-file-list-3-line"></i></div>
+          <span class="card-change up">↑ 12</span>
+        </div>
+        <div class="card-value">124</div>
+        <div class="card-label">Total Pending</div>
+      </div>
+      <div class="card c-green">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon"><i class="ri-check-double-line"></i></div>
+          <span class="card-change up">↑ 5</span>
+        </div>
+        <div class="card-value">38</div>
+        <div class="card-label">Approved Today</div>
+      </div>
+      <div class="card c-amber">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon"><i class="ri-time-line"></i></div>
+          <span class="card-change down">3d old</span>
+        </div>
+        <div class="card-value">86</div>
+        <div class="card-label">Awaiting Review</div>
+      </div>
+      <div class="card c-rose">
+        <div class="card-glow"></div>
+        <div class="card-top">
+          <div class="card-icon"><i class="ri-close-circle-line"></i></div>
+          <span class="card-change down">↓ 2</span>
+        </div>
+        <div class="card-value">11</div>
+        <div class="card-label">Rejected</div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table-head">
+        <div class="live-dot"></div>
+        <div class="table-head-title">Recent Applications</div>
+        <div class="table-filter">
+          <i class="ri-search-line"></i>
+          <input type="text" placeholder="Filter table...">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Region</th>
+            <th>Parent</th>
+            <th>MT5 Account</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>John Lee</strong><br>
+              <small>john@example.com</small>
+            </td>
+            <td>Malaysia</td>
+            <td><code style="font-size:11px;color:#3b82f6;background:rgba(59,130,246,0.1);padding:2px 6px;border-radius:4px">REF-1042</code></td>
+            <td>USD · 1:100</td>
+            <td><small>21 Apr 2026, 09:14</small></td>
+            <td><span class="status st-pend"><span class="s-dot"></span>PENDING</span></td>
+            <td>
+              <span class="action-btn"><i class="ri-more-fill"></i></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Sarah Tan</strong><br>
+              <small>sarah@example.com</small>
+            </td>
+            <td>Singapore</td>
+            <td><code style="font-size:11px;color:#3b82f6;background:rgba(59,130,246,0.1);padding:2px 6px;border-radius:4px">REF-0981</code></td>
+            <td>USD · 1:200</td>
+            <td><small>21 Apr 2026, 08:52</small></td>
+            <td><span class="status st-appr"><span class="s-dot"></span>APPROVED</span></td>
+            <td>
+              <span class="action-btn"><i class="ri-more-fill"></i></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Ahmad Faiz</strong><br>
+              <small>ahmad@example.com</small>
+            </td>
+            <td>Indonesia</td>
+            <td><span style="color:var(--text-3)">—</span></td>
+            <td>USD · —</td>
+            <td><small>20 Apr 2026, 17:30</small></td>
+            <td><span class="status st-rjct"><span class="s-dot"></span>REJECTED</span></td>
+            <td>
+              <span class="action-btn"><i class="ri-more-fill"></i></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Wei Xin</strong><br>
+              <small>wei@example.com</small>
+            </td>
+            <td>China</td>
+            <td><code style="font-size:11px;color:#3b82f6;background:rgba(59,130,246,0.1);padding:2px 6px;border-radius:4px">REF-1100</code></td>
+            <td>USD · 1:500</td>
+            <td><small>20 Apr 2026, 15:10</small></td>
+            <td><span class="status st-pend"><span class="s-dot"></span>PENDING</span></td>
+            <td>
+              <span class="action-btn"><i class="ri-more-fill"></i></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div class="label">DESIGN_PREVIEW v2 — <span>FUTURISTIC</span></div>
+
+<script>
+  const sections = {
+    dashboard: { title: 'Dashboard', tag: 'CORE', links: [{ label: 'Overview', icon: 'ri-home-4-line', active: true }] },
+    user: {
+      title: 'User Management', tag: 'USERS',
+      links: [
+        { label: 'User Listing', icon: 'ri-user-line' },
+        { label: 'Pending Revenue Transaction', icon: 'ri-money-dollar-circle-line' },
+      ]
+    },
+    client: {
+      title: 'Client Management', tag: 'CLIENTS',
+      links: [
+        { label: 'Client Listing', icon: 'ri-contacts-line' },
+        { label: 'Pending Application', icon: 'ri-file-list-3-line' },
+        { label: 'Pending Transaction', icon: 'ri-exchange-line' },
+        { label: 'Leverage Update', icon: 'ri-scales-line' },
+      ]
+    },
+    ib: {
+      title: 'IB Management', tag: 'IB',
+      links: [
+        { label: 'Project Listing', icon: 'ri-folder-line' },
+        { label: 'Commission Payout', icon: 'ri-bank-card-line' },
+        { label: 'External Payout', icon: 'ri-send-plane-line' },
+        { label: 'Manual Commission', icon: 'ri-hand-coin-line' },
+        { label: 'Auto Payout Setting', icon: 'ri-settings-4-line' },
+      ]
+    },
+    aplan: {
+      title: 'A Plan Management', tag: 'A-PLAN',
+      links: [
+        { label: 'Symbol Group', icon: 'ri-price-tag-3-line' },
+        { label: 'Top Sales Account', icon: 'ri-trophy-line' },
+        { label: 'IB / Trader Account', icon: 'ri-user-star-line' },
+        { label: 'Pending Application', icon: 'ri-file-list-3-line' },
+        { label: 'Network List', icon: 'ri-git-merge-line' },
+        { label: 'Partner Offer Confirmation', icon: 'ri-handshake-line' },
+        { label: 'Commission Payout', icon: 'ri-bank-card-line' },
+        { label: 'Manual Commission', icon: 'ri-hand-coin-line' },
+        { label: 'Downline Report', icon: 'ri-bar-chart-grouped-line' },
+      ]
+    },
+    mt5: {
+      title: 'MT5 Management', tag: 'MT5',
+      links: [
+        { label: 'MT5 Settings', icon: 'ri-settings-5-line' },
+        { label: 'Pending Application', icon: 'ri-file-list-3-line', active: true },
+      ]
+    },
+    sofinx: {
+      title: 'Sofinx / Trade Team', tag: 'TRADING',
+      groups: [
+        { label: 'SOFINX_MANAGEMENT', links: [
+          { label: 'Commission Plan Linkage', icon: 'ri-link-m' },
+          { label: 'Investor List', icon: 'ri-group-line' },
+          { label: 'Investor Details', icon: 'ri-profile-line' },
+          { label: 'Position List', icon: 'ri-list-check' },
+          { label: 'Close Position List', icon: 'ri-close-circle-line' },
+          { label: 'Deposit', icon: 'ri-arrow-down-circle-line' },
+          { label: 'Withdrawal', icon: 'ri-arrow-up-circle-line' },
+          { label: 'Group List', icon: 'ri-team-line' },
+          { label: 'Symbols List', icon: 'ri-funds-line' },
+        ]},
+        { label: 'TRADE_TEAM', links: [
+          { label: 'Project Max Rebate Details', icon: 'ri-percent-line' },
+          { label: 'Project Payout Details', icon: 'ri-bank-card-line' },
+        ]}
+      ]
+    },
+    tools: {
+      title: 'Extra Features', tag: 'TOOLS',
+      links: [
+        { label: 'EXCOM Records', icon: 'ri-database-line' },
+        { label: 'Enable / Disable MT4 Account', icon: 'ri-toggle-line' },
+        { label: 'Create New MT4 Group', icon: 'ri-add-circle-line' },
+        { label: 'Check Trade Record', icon: 'ri-search-line' },
+        { label: 'Insert Trade Record', icon: 'ri-file-add-line' },
+        { label: 'Rerun Trade Sum', icon: 'ri-restart-line' },
+        { label: 'Get Missing Trade Record', icon: 'ri-error-warning-line' },
+        { label: "Update User's PSP", icon: 'ri-user-settings-line' },
+        { label: "Update Network's PSP", icon: 'ri-global-line' },
+        { label: 'Notification Setting', icon: 'ri-notification-4-line' },
+        { label: 'Update MT5 Comment', icon: 'ri-chat-1-line' },
+        { label: 'Bulk Transaction MT4/MT5', icon: 'ri-loop-left-line' },
+      ]
+    },
+    content: {
+      title: 'Content & Modules', tag: 'CONTENT',
+      groups: [
+        { label: 'MODULES', links: [
+          { label: 'Announcement Module', icon: 'ri-megaphone-line' },
+          { label: 'News Module', icon: 'ri-newspaper-line' },
+          { label: 'Landing Page Setup', icon: 'ri-layout-line' },
+          { label: 'User Guide Category', icon: 'ri-book-open-line' },
+          { label: 'User Guide', icon: 'ri-question-line' },
+        ]},
+        { label: 'OTHER', links: [
+          { label: 'Commission Plan', icon: 'ri-coins-line' },
+          { label: 'Reporting Module', icon: 'ri-bar-chart-2-line' },
+          { label: 'Local Depositor', icon: 'ri-bank-line' },
+          { label: 'Partial Account', icon: 'ri-account-pin-circle-line' },
+          { label: 'LPOA Pending Application', icon: 'ri-file-shield-2-line' },
+        ]}
+      ]
+    },
+    settings: {
+      title: 'Settings', tag: 'SYSTEM',
+      groups: [
+        { label: 'ACCESS_CONTROL', links: [
+          { label: 'E-Wallet Upload', icon: 'ri-upload-cloud-line' },
+          { label: 'Manage PSP', icon: 'ri-bank-card-2-line' },
+          { label: 'Role Based Access', icon: 'ri-key-line' },
+          { label: 'Permissions', icon: 'ri-lock-line' },
+          { label: 'Roles', icon: 'ri-shield-line' },
+          { label: 'Users', icon: 'ri-user-settings-line' },
+        ]},
+        { label: 'SYSTEM_CONFIG', links: [
+          { label: 'Exchange Rate Management', icon: 'ri-currency-line' },
+          { label: 'Bank Account Management', icon: 'ri-bank-line' },
+          { label: 'Email Management', icon: 'ri-mail-settings-line' },
+          { label: 'Configuration', icon: 'ri-settings-3-line' },
+          { label: 'Developer Tools', icon: 'ri-code-s-slash-line' },
+          { label: 'Client Logs Viewer', icon: 'ri-file-text-line' },
+          { label: 'Admin Logs Viewer', icon: 'ri-admin-line' },
+          { label: 'Sidebar Access', icon: 'ri-layout-left-2-line' },
+          { label: 'Change Password', icon: 'ri-lock-password-line' },
+        ]}
+      ]
+    }
+  };
+
+  let currentSection = null;
+
+  function renderPanel(key) {
+    const s = sections[key];
+    document.getElementById('gp-title').textContent = s.title;
+    document.getElementById('gp-tag').textContent = s.tag;
+    document.getElementById('gp-search').value = '';
+
+    let html = '';
+
+    const renderLink = (l) => `
+      <a class="gp-link ${l.active ? 'active' : ''}" href="#">
+        <span class="icon"><i class="${l.icon || 'ri-circle-line'}"></i></span>
+        ${l.label}
+        <i class="ri-arrow-right-s-line arrow"></i>
+      </a>`;
+
+    if (s.groups) {
+      s.groups.forEach(g => {
+        html += `<div class="gp-section-label">${g.label}</div>`;
+        g.links.forEach(l => { html += renderLink(typeof l === 'string' ? { label: l } : l); });
+      });
+    } else {
+      (s.links || []).forEach(l => { html += renderLink(l); });
+    }
+
+    document.getElementById('gp-body').innerHTML = html;
+  }
+
+  function openPanel(key, el) {
+    const panel = document.getElementById('glass-panel');
+    const backdrop = document.getElementById('backdrop');
+    document.querySelectorAll('.rail-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+
+    if (currentSection === key) {
+      panel.classList.remove('open');
+      backdrop.classList.remove('visible');
+      currentSection = null;
+      return;
+    }
+
+    currentSection = key;
+    renderPanel(key);
+    panel.classList.add('open');
+    backdrop.classList.add('visible');
+  }
+
+  function closePanel() {
+    document.getElementById('glass-panel').classList.remove('open');
+    document.getElementById('backdrop').classList.remove('visible');
+    currentSection = null;
+  }
+
+  function filterLinks(q) {
+    document.querySelectorAll('.gp-link').forEach(l => {
+      l.style.display = l.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+    });
+    document.querySelectorAll('.gp-section-label').forEach(lbl => {
+      lbl.style.display = q ? 'none' : '';
+    });
+  }
+
+  // Default open: MT5
+  openPanel('mt5', document.querySelectorAll('.rail-item')[6]);
+</script>
+</body>
+</html>
